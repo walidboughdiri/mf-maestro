@@ -5,7 +5,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import MediatorApp from "./MediatorApp";
 import "./i18n";
-export { StateProvider, useStateValue } from "./MediatorContext";
 export { default as MicroAppComponent } from "./MicroAppComponent";
 export { resources as i18nResources, mergeDeep } from "./i18n";
 
