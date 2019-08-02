@@ -1,0 +1,173 @@
+import React, { useEffect, useState } from "react";
+import { useStateValue } from "./MediatorContext";
+import loadServiceManifest from "./loadServiceManifest";
+import { useTranslation } from "react-i18next";
+import { store } from "./GlobalState";
+
+export default function MicroAppComponent(props) {
+  window.MfMaestro.setupMicroAppCallbacks(props.app);
+
+  const wrapperId =
+    props.app + "@" + Math.floor(Math.random() * Math.floor(10000));
+  console.log(
+    `>>>>>>>>>>>>>>>>>>>>> ${wrapperId} MicroAppComponent refreshing`
+  );
+  const manifestUrl =
+    props.manifestUrl || `/${props.serviceName}/assets/components.json`;
+
+  const { t } = useTranslation();
+  //const [{ loadedManifests, loadedMicroApps }, dispatch] = useStateValue();
+  const { loadedManifests, loadedMicroApps } = store.getState();
+  console.log(`${wrapperId} loadedManifests au tout début : `, loadedManifests);
+  console.log(
+    `${wrapperId} loadedManifests[manifestUrl] au tout début : `,
+    loadedManifests[manifestUrl]
+  );
+  console.log(`${wrapperId} manifestUrl au tout début : `, manifestUrl);
+  const [manifestLoaded, setManifestLoaded] = useState(
+    typeof loadedManifests[manifestUrl] === "object" &&
+      loadedManifests[manifestUrl].state === "loaded"
+  );
+  console.log(`${wrapperId} manifest:`, manifest);
+  const [microAppLoaded, setMicroAppLoaded] = useState(
+    typeof loadedMicroApps[props.app] === "object" &&
+      loadedMicroApps[props.app].state === "loaded"
+  );
+  console.log(
+    `${wrapperId} microAppLoaded after component init :`,
+    microAppLoaded
+  );
+  if (microAppLoaded === false) {
+    window.MfMaestro.addLoadCallback(props.app, wrapperId, () => {
+      console.log(
+        `${wrapperId} >>>> call window.MfMaestro.loadCallbacks[${props.app}]`
+      );
+      setMicroAppLoaded(true);
+    });
+  }
+
+  const [microAppError, setMicroAppError] = useState(null);
+
+  useEffect(() => {
+    if (manifest !== undefined) {
+      console.log(
+        `${wrapperId} MicroAppComponent > useEffect/loadManifest > manifest already loaded :`,
+        manifest
+      );
+      return;
+    }
+    async function loadManifest() {
+      if (manifestUrl in loadedManifests) {
+        setManifest(loadedManifests[manifestUrl]);
+        return;
+      }
+      if (window.MfMaestro.manifestIsLoading(manifestUrl)) {
+        return;
+      } else {
+        window.MfMaestro.manifests[manifestUrl] = "loading";
+      }
+      const action = { type: "addManifest", url: manifestUrl };
+      try {
+        let loadedManifest = await loadServiceManifest(manifestUrl);
+        if (!loadedManifest.error) {
+          console.log(`${wrapperId} loadedManifest`, loadedManifest);
+          setManifest(loadedManifest);
+        }
+        action.manifest = { ...loadedManifest };
+      } catch (error) {
+        action.manifest = { errorDetail: error.message, error: error };
+      }
+      dispatch(action);
+      delete window.MfMaestro.manifests[manifestUrl];
+    }
+    console.log(`${wrapperId} in useEffect loadManifest :`, manifest);
+    loadManifest();
+  }, [props.manifestUrl]);
+
+  useEffect(() => {
+    if (microAppLoaded === true) {
+      console.log(
+        `${wrapperId} in useEffect loadMicroAppCode microAppLoaded === true, return`
+      );
+      return;
+    }
+    if (manifest === undefined) {
+      console.log(
+        `${wrapperId} in useEffect loadMicroAppCode manifest === undefined`
+      );
+      return;
+    }
+    if (
+      loadedMicroApps[props.app] &&
+      loadedMicroApps[props.app].state == "loading"
+    ) {
+      console.log(
+        `${wrapperId} in useEffect loadMicroAppCode but loading ${props.app}`
+      );
+      return;
+    }
+    if (
+      loadedMicroApps[props.app] &&
+      loadedMicroApps[props.app].state == "loaded"
+    ) {
+      console.log(
+        `${wrapperId} in useEffect loadMicroAppCode but ${props.app} is already loaded`
+      );
+      setMicroAppLoaded(true);
+      return;
+    }
+    async function loadMicroAppCode(microAppConfig) {
+      const script = document.createElement("script");
+      script.src = microAppConfig.url;
+      document.body.appendChild(script);
+    }
+    const microAppConfig = manifest[props.app];
+
+    if (microAppConfig === undefined) {
+      setMicroAppError(
+        t(
+          `Unable to find a config object for service named ${props.app} in manifest (${manifestUrl}). Or this microApp is not delivered by this service, or you specified a wrong name in props 'app'`
+        )
+      );
+      return;
+    }
+
+    console.log(`${wrapperId} in useEffect loadMicroAppCode`);
+    loadMicroAppCode(microAppConfig);
+  }, [manifest]);
+
+  useEffect(() => {
+    console.log(`${wrapperId} *** useEffect start app`, microAppLoaded);
+    console.log(`${wrapperId} loadedMicroApps before start`, loadedMicroApps);
+    if (microAppLoaded === true) {
+      loadedMicroApps[props.app].start(wrapperId, {});
+    }
+  }, [microAppLoaded]);
+
+  let render = null;
+  if (manifest === undefined) {
+    console.log(`${wrapperId} manifest is undefined ?`);
+    render = <div>{t(`loading micro app ${wrapperId}`)}</div>;
+  } else if (manifest.error) {
+    render = (
+      <div className="load-error">
+        {wrapperId} manifest error : {manifest.errorDetail}
+      </div>
+    );
+  } else if (microAppError) {
+    render = (
+      <div className="load-error">
+        {wrapperId} microAppError : {microAppError}
+      </div>
+    );
+  } else {
+    //const Component = microAppTypes[microAppConfig.type];
+    //render = <Component />;
+  }
+
+  return (
+    <div data-type="micro-app-component" data-app={props.app} id={wrapperId}>
+      {render}
+    </div>
+  );
+}
