@@ -1,6 +1,6 @@
 import "regenerator-runtime/runtime";
-import "./GlobalNamespace";
 import "./GlobalState";
+import "./GlobalNamespace";
 import React from "react";
 import ReactDOM from "react-dom";
 import MediatorApp from "./MediatorApp";

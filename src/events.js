@@ -1,5 +1,5 @@
 import EventEmitter from "eventemitter3";
-import { isEventsDebugActivated } from "../GlobalState";
+import { isEventsDebugActivated } from "./GlobalState";
 
 const eventEmitter = new EventEmitter();
 
@@ -13,14 +13,10 @@ export function removeListener(event, emitted, context) {
   return eventEmitter.removeListener(event, emitted, context);
 }
 export function emit(event, ...args) {
-  if (isEventsDebugActivated() && event.indexOf("devtool") === -1) {
-    console.info(
-      `%cEvent emitted : %c"${event}"`,
-      "color: blue",
-      "color: green"
-    );
-    args.length && console.info("%cwith args : ", "color: blue", ...args);
-  }
+  //if (isEventsDebugActivated() && event.indexOf("devtool") === -1) {
+  console.info(`%cEvent emitted : %c"${event}"`, "color: blue", "color: green");
+  args.length && console.info("%cwith args : ", "color: blue", ...args);
+  //}
   eventEmitter.emit(`devtool`, { event, arguments: args });
   return eventEmitter.emit(event, ...args);
 }

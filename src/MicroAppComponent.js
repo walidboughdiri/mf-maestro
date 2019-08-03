@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import loadServiceManifest from "./loadServiceManifest";
 import { useTranslation } from "react-i18next";
 import {
+  addMicroAppLoadWatcher,
   isManifestLoaded,
   isManifestLoading,
   isMicroAppLoaded,
@@ -22,14 +23,9 @@ function uuidv4() {
   );
 }
 export default function MicroAppComponent(props) {
-  window.MfMaestro.setupMicroAppCallbacks(props.app);
-
   const [isMicroAppLaunchable, setMicroAppLaunchable] = useState(false);
   const [wrapperId, setWrapperId] = useState(props.app + "@" + uuidv4());
-  console.log(
-    `1 >>>>>>>>>>>>>>>>>>>>> ${wrapperId} MicroAppComponent refreshing`,
-    props
-  );
+  console.log(`%c${wrapperId}`, "color:red;", props);
   const manifestUrl =
     props.manifestUrl || `/${props.serviceName}/assets/components.json`;
   console.log(`1 ${wrapperId} manifestUrl au tout début : `, manifestUrl);
@@ -56,30 +52,35 @@ export default function MicroAppComponent(props) {
     isMicroAppLoaded(props.app)
   );
   if (!isMicroAppLoaded(props.app)) {
-    console.log(`1 ${wrapperId} microApp loaded not loaded, add loadCallback`);
-    window.MfMaestro.addLoadCallback(props.app, wrapperId, () => {
-      console.log(
-        `RRRRRRRRRRRRRRRR 1(if !microAppLoaded) ${wrapperId} >>>> call window.MfMaestro.loadCallbacks[${props.app}]`
-      );
-      if (!isMicroAppLaunchable) {
-        console.log("RRRRRRRRRRRRRRR setMicroAppLaunchable 1", true);
-        setMicroAppLaunchable(true);
-      }
-    });
+    console.log(`1 ${wrapperId} microApp not loaded, add loadCallback`);
+    addMicroAppLoadWatcher(
+      props.app,
+      () => {
+        console.log(
+          "1/LAUNCH : isMicroAppLaunchable vaut : ",
+          isMicroAppLaunchable
+        );
+        if (isMicroAppLaunchable === false) {
+          console.log("1/LAUNCH : setMicroAppLaunchable à true", true);
+          setMicroAppLaunchable(true);
+        }
+      },
+      wrapperId
+    );
   } else {
     console.log(`1 ${wrapperId} microApp loaded, start application`);
   }
 
   useEffect(() => {
-    async function loadManifest() {
+    async function loadMicroApp() {
       if (isManifestLoading(manifestUrl, wrapperId)) {
         console.log(
-          `2 ${wrapperId} MicroAppComponent > useEffect/loadManifest > manifest is loading, out!`
+          `2 ${wrapperId} MicroAppComponent > useEffect/loadMicroApp > manifest is loading, out!`
         );
         return;
       }
       console.log(
-        `2 ${wrapperId} MicroAppComponent > useEffect/loadManifest > start loading manifest <<<<<<<<<<<<`
+        `2 ${wrapperId} MicroAppComponent > useEffect/loadMicroApp > start loading manifest <<<<<<<<<<<<`
       );
       if (!isManifestLoaded(manifestUrl, wrapperId)) {
         console.log(`2 ${wrapperId} on loade le manifeste`);
@@ -108,8 +109,8 @@ export default function MicroAppComponent(props) {
         document.body.appendChild(script);
       }
     }
-    console.log(`2 ${wrapperId} in useEffect loadManifest :`, manifestUrl);
-    loadManifest();
+    console.log(`2 ${wrapperId} in useEffect loadMicroApp :`, manifestUrl);
+    loadMicroApp();
   });
   async function lmanifest() {
     store.dispatch({ type: "loadManifest", url: manifestUrl });

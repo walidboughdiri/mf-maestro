@@ -12,7 +12,7 @@ export function isManifestLoading(manifestUrl, id) {
   return isManifestInState(manifestUrl, "loading", id);
 }
 
-export function isManifestInState(manifestUrl, state, id) {
+export function isManifestInState(manifestUrl, state) {
   if (state !== "loading" && state !== "loaded") {
     throw `wrong state for manifest (state: "${state}")`;
   }
@@ -52,33 +52,89 @@ export function microAppConfigFromState(wrapperId, manifestUrl, microAppName) {
   return manifestState.content[microAppName];
 }
 
-export function addLoadCallback(appName, wrapperId, callback) {
-  store.dispatch({ appName, type: "addLoadCallbacks", callback });
+export function addMicroAppLoadWatcher(appName, callback, wrapperId) {
+  if (typeof callback !== "function") return;
+  if (typeof wrapperId !== "string") return;
+  if (typeof appName !== "string") return;
+  store.dispatch({
+    appName,
+    callback,
+    type: "addMicroAppLoadWatcher",
+    wrapperId
+  });
+}
+
+export function navigationState() {
+  return store.getState().navigation;
+}
+
+export function storeBlockedNavigation(targetLocation, unblockFn) {
+  if (typeof callback !== "function") return;
+  if (typeof targetLocation !== "string") return;
+  store.dispatch({
+    targetLocation,
+    type: "storeBlockedNavigation",
+    unblockFn
+  });
+}
+
+export function resetNavigation() {
+  store.dispatch({
+    type: "resetNavigation"
+  });
+}
+
+export function getMicroAppLoadWatchers(microAppName) {
+  const watchers = store.getState().loadCallbacks[microAppName];
+  return typeof watchers === "object" ? watchers : {};
+}
+
+export function deleteMicroAppLoadWatchers(microAppName) {
+  store.dispatch({ microAppName, type: "deleteMicroAppLoadWatchers" });
 }
 
 const initialState = {
   eventsDebug: false,
   loadCallbacks: {},
   loadedMicroApps: {},
-  loadedManifests: {}
+  loadedManifests: {},
+  navigation: {}
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "activateEventsDebug":
-      return { ...state, eventsDebug: true };
-    case "addLoadCallback":
+    case "resetNavigation":
       return {
         ...state,
-        loadCallbacks: state.loadCallbacks[action.appName]
-          ? {
-              ...state.loadCallbacks,
-              [action.appName]: {
-                ...state.loadCallbacks[action.appName],
-                [action.appName]: action.callback
-              }
-            }
-          : { ...state.loadCallbacks, [action.appName]: action.callback }
+        navigation: {}
+      };
+    case "storeBlockedNavigation":
+      return {
+        ...state,
+        navigation: {
+          ...state.navigation,
+          targetLocation: action.targetLocation,
+          unblockFn: action.unblockFn
+        }
+      };
+    case "activateEventsDebug":
+      return { ...state, eventsDebug: true };
+    case "deleteMicroAppLoadWatchers":
+      delete state.loadCallbacks[action.appName];
+      return state;
+    case "addMicroAppLoadWatcher":
+      if (typeof state.loadCallbacks[action.appName] !== "object") {
+        state.loadCallbacks[action.appName] = {};
+      }
+      return {
+        ...state,
+        loadCallbacks: {
+          ...state.loadCallbacks,
+          [action.appName]: {
+            ...state.loadCallbacks[action.appName],
+            [action.wrapperId]: action.callback
+          }
+        }
       };
     case "deActivateEventsDebug":
       return { ...state, eventsDebug: false };
@@ -144,12 +200,14 @@ const reducer = (state = initialState, action) => {
 
 export const store = createStore(reducer);
 
-window.MfMaestro.registerMicroApp = function(microAppName, microAppObject) {
-  console.log(`GS ••• registerMicroApp ${microAppName}`);
-  store.dispatch({
-    microAppName,
-    microAppObject,
-    type: "addMicroApp"
+export function instantiate(microAppName) {
+  console.log(
+    `STORE/instanciate ${microAppName} : `,
+    getMicroAppLoadWatchers(microAppName)
+  );
+  Object.values(getMicroAppLoadWatchers(microAppName)).forEach(watcher => {
+    console.log(`STORE/instanciate ${microAppName}/watcher`, watcher);
+    watcher();
   });
-  window.MfMaestro.instanciate(microAppName);
-};
+  deleteMicroAppLoadWatchers(microAppName);
+}
