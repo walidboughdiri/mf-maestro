@@ -1,5 +1,6 @@
 import EventEmitter from "eventemitter3";
 import { isEventsDebugActivated } from "./GlobalState";
+import { browserHistory } from "./BrowserHistory";
 
 const eventEmitter = new EventEmitter();
 
@@ -12,11 +13,21 @@ export function on(event, emitted, context) {
 export function removeListener(event, emitted, context) {
   return eventEmitter.removeListener(event, emitted, context);
 }
+export function removeAllListener(event) {
+  return eventEmitter.removeAllListener(event);
+}
+export function listeners(event) {
+  return eventEmitter.listeners(event);
+}
 export function emit(event, ...args) {
-  //if (isEventsDebugActivated() && event.indexOf("devtool") === -1) {
-  console.info(`%cEvent emitted : %c"${event}"`, "color: blue", "color: green");
-  args.length && console.info("%cwith args : ", "color: blue", ...args);
-  //}
+  if (isEventsDebugActivated() && event.indexOf("devtool") === -1) {
+    console.info(
+      `%cEvent emitted : %c"${event}"`,
+      "color: blue",
+      "color: green"
+    );
+    args.length && console.info("%cwith args : ", "color: blue", ...args);
+  }
   eventEmitter.emit(`devtool`, { event, arguments: args });
   return eventEmitter.emit(event, ...args);
 }
@@ -29,7 +40,7 @@ export function redirectOnEvent(message, path, { emitBefore, emitAfter } = {}) {
       (p, arg) => p.replace(arg, args[arg.substr(1)]),
       path
     );
-    history.push(parsedPath);
+    browserHistory.push(parsedPath);
     emitAfter && emit(emitAfter);
   });
 }

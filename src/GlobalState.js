@@ -4,6 +4,11 @@ export function isEventsDebugActivated() {
   return store.getState().eventsDebug;
 }
 
+export function toggleEventsDebug() {
+  store.dispatch({ type: "toggleEventsDebug" });
+  return isEventsDebugActivated();
+}
+
 export function isManifestLoaded(manifestUrl, id) {
   return isManifestInState(manifestUrl, "loaded", id);
 }
@@ -117,8 +122,8 @@ const reducer = (state = initialState, action) => {
           unblockFn: action.unblockFn
         }
       };
-    case "activateEventsDebug":
-      return { ...state, eventsDebug: true };
+    case "toggleEventsDebug":
+      return { ...state, eventsDebug: !state.eventsDebug };
     case "deleteMicroAppLoadWatchers":
       delete state.loadCallbacks[action.appName];
       return state;

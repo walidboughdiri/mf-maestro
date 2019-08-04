@@ -1,12 +1,13 @@
-import { instantiate, store } from "./GlobalState";
+import { instantiate, store, toggleEventsDebug } from "./GlobalState";
 import {
+  emit,
+  listeners,
+  mutateEvent,
   on,
   once,
-  removeListener,
-  emit,
+  reactToEvent,
   redirectOnEvent,
-  mutateEvent,
-  reactToEvent
+  removeListener
 } from "./events";
 
 if (window.MfMaestro === undefined) {
@@ -16,13 +17,15 @@ if (window.MfMaestro === undefined) {
       store.dispatch({ microAppName, microAppObject, type: "addMicroApp" });
       instantiate(microAppName);
     },
+    emit,
+    listeners,
+    mutateEvent,
     on,
     once,
+    reactToEvent,
     removeListener,
-    emit,
     redirectOnEvent,
-    mutateEvent,
-    reactToEvent
+    toggleEventsDebug
   };
 } else {
   if (typeof window.MfMaestro !== "object") {
