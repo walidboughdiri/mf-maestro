@@ -1,5 +1,5 @@
 import EventEmitter from "eventemitter3";
-import { isEventsDebugActivated } from "./GlobalState";
+import { isEventsDebugActivated } from "./AppStateStore";
 import { browserHistory } from "./BrowserHistory";
 
 const eventEmitter = new EventEmitter();

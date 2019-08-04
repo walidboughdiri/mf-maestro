@@ -1,4 +1,4 @@
-import { validate } from "bycontract";
+import { validate } from "byContract";
 import { createStore } from "redux";
 
 export function isEventsDebugActivated() {

@@ -1,10 +1,10 @@
-import { validate } from "bycontract";
+import { validate } from "byContract";
 import {
   isMicroAppLoaded,
   isMicroAppLoading,
   microAppConfigFromState,
   store
-} from "./GlobalState";
+} from "./AppStateStore";
 
 export function loadMicroAppJsFile(manifestUrl, microAppName, wrapperId) {
   validate(arguments, ["string", "string", "string"]);

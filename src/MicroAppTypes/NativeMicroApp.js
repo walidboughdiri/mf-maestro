@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { microAppState } from "../GlobalState";
+import { microAppState } from "../AppStateStore";
 
 export default React.memo(function NativeMicroApp(props) {
   useEffect(() => {

@@ -1,5 +1,5 @@
 import "regenerator-runtime/runtime";
-import "./GlobalState";
+import "./AppStateStore";
 import "./GlobalNamespace";
 import React from "react";
 import ReactDOM from "react-dom";

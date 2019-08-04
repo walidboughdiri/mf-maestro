@@ -8,7 +8,7 @@ import {
   isManifestLoaded,
   isMicroAppLoaded,
   microAppConfigFromState
-} from "./GlobalState";
+} from "./AppStateStore";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
 const renderers = {
   elm: NativeMicroApp
