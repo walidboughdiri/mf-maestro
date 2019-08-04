@@ -1,3 +1,4 @@
+import { validate } from "bycontract";
 import { createStore } from "redux";
 
 export function isEventsDebugActivated() {
@@ -9,15 +10,18 @@ export function toggleEventsDebug() {
   return isEventsDebugActivated();
 }
 
-export function isManifestLoaded(manifestUrl, id) {
-  return isManifestInState(manifestUrl, "loaded", id);
+export function isManifestLoaded(manifestUrl) {
+  validate(arguments, ["string"]);
+  return isManifestInState(manifestUrl, "loaded");
 }
 
-export function isManifestLoading(manifestUrl, id) {
-  return isManifestInState(manifestUrl, "loading", id);
+export function isManifestLoading(manifestUrl) {
+  validate(arguments, ["string"]);
+  return isManifestInState(manifestUrl, "loading");
 }
 
 export function isManifestInState(manifestUrl, state) {
+  validate(arguments, ["string", "string"]);
   if (state !== "loading" && state !== "loaded") {
     throw `wrong state for manifest (state: "${state}")`;
   }
@@ -29,18 +33,22 @@ export function isManifestInState(manifestUrl, state) {
 }
 
 export function microAppState(appName) {
+  validate(arguments, ["string"]);
   return store.getState().loadedMicroApps[appName];
 }
 
 export function isMicroAppLoaded(microAppName) {
+  validate(arguments, ["string"]);
   return isMicroAppInState(microAppName, "loaded");
 }
 
 export function isMicroAppLoading(microAppName) {
+  validate(arguments, ["string"]);
   return isMicroAppInState(microAppName, "loading");
 }
 
 export function isMicroAppInState(microAppName, state) {
+  validate(arguments, ["string", "string"]);
   if (state !== "loading" && state !== "loaded") {
     throw `wrong state for manifest (state: "${state}")`;
   }
@@ -51,6 +59,7 @@ export function isMicroAppInState(microAppName, state) {
   );
 }
 export function microAppConfigFromState(wrapperId, manifestUrl, microAppName) {
+  validate(arguments, ["string", "string", "string"]);
   if (!isManifestLoaded(manifestUrl, wrapperId)) return null;
   const manifestState = store.getState().loadedManifests[manifestUrl];
   if (manifestState === undefined) return null;
@@ -58,9 +67,7 @@ export function microAppConfigFromState(wrapperId, manifestUrl, microAppName) {
 }
 
 export function addMicroAppLoadWatcher(appName, callback, wrapperId) {
-  if (typeof callback !== "function") return;
-  if (typeof wrapperId !== "string") return;
-  if (typeof appName !== "string") return;
+  validate(arguments, ["string", "function", "string"]);
   store.dispatch({
     appName,
     callback,
@@ -74,8 +81,7 @@ export function navigationState() {
 }
 
 export function storeBlockedNavigation(targetLocation, unblockFn) {
-  if (typeof callback !== "function") return;
-  if (typeof targetLocation !== "string") return;
+  validate(arguments, ["string", "function"]);
   store.dispatch({
     targetLocation,
     type: "storeBlockedNavigation",
@@ -90,11 +96,13 @@ export function resetNavigation() {
 }
 
 export function getMicroAppLoadWatchers(microAppName) {
+  validate(arguments, ["string"]);
   const watchers = store.getState().loadCallbacks[microAppName];
   return typeof watchers === "object" ? watchers : {};
 }
 
 export function deleteMicroAppLoadWatchers(microAppName) {
+  validate(arguments, ["string"]);
   store.dispatch({ microAppName, type: "deleteMicroAppLoadWatchers" });
 }
 
@@ -206,12 +214,8 @@ const reducer = (state = initialState, action) => {
 export const store = createStore(reducer);
 
 export function instantiate(microAppName) {
-  console.log(
-    `STORE/instanciate ${microAppName} : `,
-    getMicroAppLoadWatchers(microAppName)
-  );
+  validate(arguments, ["string"]);
   Object.values(getMicroAppLoadWatchers(microAppName)).forEach(watcher => {
-    console.log(`STORE/instanciate ${microAppName}/watcher`, watcher);
     watcher();
   });
   deleteMicroAppLoadWatchers(microAppName);

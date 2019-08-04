@@ -33,6 +33,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "bycontract": "^2.0.4",
     "eventemitter3": "^4.0.0",
     "i18next": "^17.0.6",
     "react": "^16.8.6",
