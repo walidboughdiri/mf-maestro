@@ -106,8 +106,21 @@ export function deleteMicroAppLoadWatchers(microAppName) {
   store.dispatch({ microAppName, type: "deleteMicroAppLoadWatchers" });
 }
 
+export function addEventListener(storeGroupId, event, callback) {
+  store.dispatch({ event, callback, type: "addEventListener", storeGroupId });
+}
+
+export function removeEventListeners(storeGroupId) {
+  store.dispatch({ type: "removeEventListeners", storeGroupId });
+}
+
+export function getStateForEventsGroup(storeGroupId) {
+  return store.getState().eventListeners[storeGroupId] || {};
+}
+
 const initialState = {
   eventsDebug: false,
+  eventListeners: {},
   loadCallbacks: {},
   loadedMicroApps: {},
   loadedManifests: {},
@@ -116,6 +129,44 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "removeEventListeners":
+      if (typeof state.eventListeners[action.storeGroupId] === "object") {
+        delete state.eventListeners[action.storeGroupId];
+      }
+      return state;
+    case "addEventListener":
+      if (typeof state.eventListeners[action.storeGroupId] !== "object") {
+        state.eventListeners[action.storeGroupId] = {};
+      }
+      if (
+        !Array.isArray(state.eventListeners[action.storeGroupId][action.event])
+      ) {
+        state.eventListeners[action.storeGroupId][action.event] = [
+          action.callback
+        ];
+        return state;
+      }
+      if (
+        state.eventListeners[action.storeGroupId][action.event].includes(
+          action.callback
+        )
+      ) {
+        return state;
+      }
+
+      return {
+        ...state,
+        eventListeners: {
+          ...state.eventListeners,
+          [action.storeGroupId]: {
+            ...state.eventListeners[action.storeGroupId],
+            [action.event]: [
+              ...state.eventListeners[action.storeGroupId][action.event],
+              ...[action.callback]
+            ]
+          }
+        }
+      };
     case "resetNavigation":
       return {
         ...state,
@@ -211,7 +262,10 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-export const store = createStore(reducer);
+export const store = createStore(
+  reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 export function instantiate(microAppName) {
   validate(arguments, ["string"]);

@@ -1,20 +1,39 @@
+import { validate } from "byContract";
 import EventEmitter from "eventemitter3";
-import { isEventsDebugActivated } from "./AppStateStore";
+import {
+  addEventListener,
+  getStateForEventsGroup,
+  isEventsDebugActivated,
+  removeEventListeners,
+  store
+} from "./AppStateStore";
 import { browserHistory } from "./BrowserHistory";
 
 const eventEmitter = new EventEmitter();
 
-export function once(event, emitted, context) {
-  return eventEmitter.once(event, emitted, context);
+export function once(event, callback, storeGroupId, context) {
+  if (storeGroupId) addEventListener(storeGroupId, event, callback);
+  return eventEmitter.once(event, callback, context);
 }
-export function on(event, emitted, context) {
-  return eventEmitter.on(event, emitted, context);
+export function on(event, callback, storeGroupId, context) {
+  if (storeGroupId) addEventListener(storeGroupId, event, callback);
+  return eventEmitter.on(event, callback, context);
 }
-export function removeListener(event, emitted, context) {
-  return eventEmitter.removeListener(event, emitted, context);
+export function removeListenersByGroup(storeGroupId) {
+  Object.entries(getStateForEventsGroup(storeGroupId)).forEach(
+    ([event, callbacks]) => {
+      callbacks.forEach(callback => {
+        eventEmitter.removeListener(event, callback);
+      });
+    }
+  );
+  removeEventListeners(storeGroupId);
 }
-export function removeAllListener(event) {
-  return eventEmitter.removeAllListener(event);
+export function removeListener(event, callback, context) {
+  return eventEmitter.removeListener(event, callback, context);
+}
+export function removeAllListeners(event) {
+  return eventEmitter.removeAllListeners(event);
 }
 export function listeners(event) {
   return eventEmitter.listeners(event);
