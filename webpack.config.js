@@ -23,7 +23,6 @@ module.exports = {
   },
   output: {
     filename: "[name].js",
-    library: ["MfMaestro", "[name]"],
     libraryTarget: "umd",
     path: path.resolve(__dirname, "lib")
   }

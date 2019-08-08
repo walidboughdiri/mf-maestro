@@ -1,14 +1,33 @@
 import { useEffect, useState } from "react";
 import { uuidv4 } from "../helpers";
-import { removeListenersByGroup } from "../events";
+import {
+  emit,
+  on,
+  once,
+  removeListener,
+  removeListenersByGroup
+} from "../events";
 
-export default function useEvents() {
-  const [storeEventGroupId] = useState(uuidv4());
+export default function useEvents(prefix = "") {
+  const [microAppId] = useState(prefix + uuidv4());
   useEffect(() => {
     return () => {
-      removeListenersByGroup(storeEventGroupId);
+      removeListenersByGroup(microAppId);
     };
   });
 
-  return storeEventGroupId;
+  const scopedEventsFn = {
+    emit,
+    on: function(event, callback, context) {
+      on(event, callback, microAppId, context);
+    },
+    once: function(event, callback, context) {
+      once(event, callback, microAppId, context);
+    },
+    removeListener: function(event, callback, context) {
+      removeListener(event, callback, microAppId, context);
+    }
+  };
+
+  return [microAppId, scopedEventsFn];
 }

@@ -110,6 +110,15 @@ export function addEventListener(storeGroupId, event, callback) {
   store.dispatch({ event, callback, type: "addEventListener", storeGroupId });
 }
 
+export function removeEventListener(storeGroupId, event, callback) {
+  store.dispatch({
+    event,
+    callback,
+    type: "removeEventListener",
+    storeGroupId
+  });
+}
+
 export function removeEventListeners(storeGroupId) {
   store.dispatch({ type: "removeEventListeners", storeGroupId });
 }
@@ -119,7 +128,7 @@ export function getStateForEventsGroup(storeGroupId) {
 }
 
 const initialState = {
-  eventsDebug: false,
+  eventsDebug: true,
   eventListeners: {},
   loadCallbacks: {},
   loadedMicroApps: {},
@@ -129,6 +138,27 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "removeEventListener":
+      if (
+        typeof state.eventListeners[action.storeGroupId] !== "object" ||
+        !Array.isArray(state.eventListeners[action.storeGroupId][action.event])
+      ) {
+        return state;
+      }
+      return {
+        ...state,
+        eventListeners: {
+          ...state.eventListeners,
+          [action.storeGroupId]: {
+            ...state.eventListeners[action.storeGroupId],
+            [action.event]: state.eventListeners[action.storeGroupId][
+              action.event
+            ].filter(callback => {
+              callback !== action.callback;
+            })
+          }
+        }
+      };
     case "removeEventListeners":
       if (typeof state.eventListeners[action.storeGroupId] === "object") {
         delete state.eventListeners[action.storeGroupId];

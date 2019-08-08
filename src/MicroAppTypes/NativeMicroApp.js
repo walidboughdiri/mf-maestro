@@ -1,9 +1,14 @@
 import React, { useEffect } from "react";
-import { microAppState } from "../AppStateStore";
 
 export default React.memo(function NativeMicroApp(props) {
   useEffect(() => {
-    microAppState(props.app).start(props.wrapperId, {});
+    props.microAppState.start(props.microAppId, props.params, {
+      events: props.scopedEventsFn
+    });
+
+    return () => {
+      props.microAppState.stop(props.microAppId);
+    };
   }, []);
-  return <div id={props.wrapperId}></div>;
+  return <div id={props.microAppId}></div>;
 });

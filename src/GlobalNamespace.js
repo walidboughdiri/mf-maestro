@@ -25,7 +25,8 @@ if (window.MfMaestro === undefined) {
     reactToEvent,
     removeListener,
     redirectOnEvent,
-    toggleEventsDebug
+    toggleEventsDebug,
+    state: () => store.getState()
   };
 } else {
   if (typeof window.MfMaestro !== "object") {

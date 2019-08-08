@@ -4,8 +4,8 @@ import {
   addEventListener,
   getStateForEventsGroup,
   isEventsDebugActivated,
-  removeEventListeners,
-  store
+  removeEventListener,
+  removeEventListeners
 } from "./AppStateStore";
 import { browserHistory } from "./BrowserHistory";
 
@@ -29,7 +29,8 @@ export function removeListenersByGroup(storeGroupId) {
   );
   removeEventListeners(storeGroupId);
 }
-export function removeListener(event, callback, context) {
+export function removeListener(event, callback, microAppId, context) {
+  if (microAppId) removeEventListener(microAppId, event, callback);
   return eventEmitter.removeListener(event, callback, context);
 }
 export function removeAllListeners(event) {

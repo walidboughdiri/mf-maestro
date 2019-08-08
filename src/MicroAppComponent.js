@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { loadAndStoreManifest } from "./loadServiceManifest";
 import { loadMicroAppJsFile } from "./loadMicroAppJsFile";
-import { uuidv4 } from "./helpers";
 import {
   addMicroAppLoadWatcher,
   isManifestLoaded,
   isMicroAppLoaded,
-  microAppConfigFromState
+  microAppConfigFromState,
+  microAppState
 } from "./AppStateStore";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
+import useEvents from "./effects/useEvents";
 const renderers = {
   elm: NativeMicroApp
 };
@@ -19,16 +20,16 @@ export default function MicroAppComponent(props) {
   const [isMicroAppLaunchable, setMicroAppLaunchable] = useState(
     isMicroAppLoaded(props.app)
   );
-  const [wrapperId, setWrapperId] = useState(props.app + "@" + uuidv4());
-  console.log(`%c${wrapperId}`, "color:red;", props);
+  const [microAppId, scopedEventsFn] = useEvents(props.app);
+  console.log(`%crendering ${microAppId} component`, "color:red;", props);
   const manifestUrl =
     props.manifestUrl || `/${props.serviceName}/assets/components.json`;
 
   const { t } = useTranslation();
   let Renderer = null;
-  if (isManifestLoaded(manifestUrl, wrapperId)) {
+  if (isManifestLoaded(manifestUrl, microAppId)) {
     const microAppConfig = microAppConfigFromState(
-      wrapperId,
+      microAppId,
       manifestUrl,
       props.app
     );
@@ -43,7 +44,7 @@ export default function MicroAppComponent(props) {
           setMicroAppLaunchable(true);
         }
       },
-      wrapperId
+      microAppId
     );
   }
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function MicroAppComponent(props) {
         case true:
           break;
       }
-      switch (loadMicroAppJsFile(manifestUrl, props.app, wrapperId)) {
+      switch (loadMicroAppJsFile(manifestUrl, props.app, microAppId)) {
         case "loaded":
           setMicroAppLaunchable(true);
           break;
@@ -74,15 +75,16 @@ export default function MicroAppComponent(props) {
   if (!isMicroAppLaunchable) {
     return (
       <div>
-        {wrapperId} - {loadStatus}
+        {microAppId} - {loadStatus}
       </div>
     );
   }
   return (
     <Renderer
-      type="micro-app-component"
-      app={props.app}
-      wrapperId={wrapperId}
+      microAppId={microAppId}
+      microAppState={microAppState(props.app)}
+      params={props.params}
+      scopedEventsFn={scopedEventsFn}
     />
   );
 }
