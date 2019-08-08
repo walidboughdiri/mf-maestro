@@ -3,9 +3,7 @@ const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
   devtool: "inline-source-map",
-  entry: {
-    startMediator: "./src/startMediator"
-  },
+  entry: "./src/startMediator",
   externals: [nodeExternals()],
   module: {
     rules: [
@@ -22,7 +20,7 @@ module.exports = {
     ]
   },
   output: {
-    filename: "[name].js",
+    filename: "index.js",
     libraryTarget: "umd",
     path: path.resolve(__dirname, "lib")
   }
