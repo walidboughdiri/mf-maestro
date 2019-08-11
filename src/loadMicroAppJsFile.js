@@ -3,7 +3,7 @@ import {
   isMicroAppLoaded,
   isMicroAppLoading,
   microAppConfigFromState,
-  store
+  store,
 } from "./AppStateStore";
 
 export function loadMicroAppJsFile(manifestUrl, microAppName, wrapperId) {
@@ -18,11 +18,20 @@ export function loadMicroAppJsFile(manifestUrl, microAppName, wrapperId) {
 
   store.dispatch({
     type: "loadMicroApp",
-    microAppName
+    microAppName,
   });
   const script = document.createElement("script");
   script.src = microAppConfig.url;
   document.body.appendChild(script);
 
+  if (microAppConfig.css) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href = microAppConfig.css;
+    link.media = "all";
+
+    document.getElementsByTagName("head")[0].appendChild(link);
+  }
   return true;
 }

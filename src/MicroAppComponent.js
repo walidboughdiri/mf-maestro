@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { loadAndStoreManifest } from "./loadServiceManifest";
 import { loadMicroAppJsFile } from "./loadMicroAppJsFile";
@@ -7,12 +8,12 @@ import {
   isManifestLoaded,
   isMicroAppLoaded,
   microAppConfigFromState,
-  microAppState
+  microAppState,
 } from "./AppStateStore";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
 import useEvents from "./effects/useEvents";
 const renderers = {
-  elm: NativeMicroApp
+  elm: NativeMicroApp,
 };
 
 export default function MicroAppComponent(props) {
@@ -81,6 +82,8 @@ export default function MicroAppComponent(props) {
   }
   return (
     <Renderer
+      app={props.app}
+      cssClass={props.cssClass || props.app}
       microAppId={microAppId}
       microAppState={microAppState(props.app)}
       params={props.params}
@@ -88,3 +91,11 @@ export default function MicroAppComponent(props) {
     />
   );
 }
+
+MicroAppComponent.propTypes = {
+  app: PropTypes.string.isRequired,
+  cssClass: PropTypes.string,
+  manifestUrl: PropTypes.string.isRequired,
+  params: PropTypes.object,
+  serviceName: PropTypes.string,
+};

@@ -1,15 +1,16 @@
 export const resources = {
   en: {
     translation: {
-      "an error occured while loading the component": "an error occured while loading the component",
-      "home": "homet",
-      "Welcome to React": "Welcome to React and react-i18next"
-    }
-  }
+      "an error occured while loading the component":
+        "an error occured while loading the component",
+      home: "homet",
+      "Welcome to React": "Welcome to React and react-i18next",
+    },
+  },
 };
 
 export function mergeDeep(source, target) {
-  const isObject = (obj) => obj && typeof obj === 'object';
+  const isObject = obj => obj && typeof obj === "object";
 
   if (!isObject(target) || !isObject(source)) {
     return source;

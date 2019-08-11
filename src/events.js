@@ -5,21 +5,24 @@ import {
   getStateForEventsGroup,
   isEventsDebugActivated,
   removeEventListener,
-  removeEventListeners
+  removeEventListeners,
 } from "./AppStateStore";
 import { browserHistory } from "./BrowserHistory";
 
 const eventEmitter = new EventEmitter();
 
 export function once(event, callback, storeGroupId, context) {
-  if (storeGroupId) addEventListener(storeGroupId, event, callback);
-  return eventEmitter.once(event, callback, context);
+  validate(arguments, ["string", "function", "string", "object="]);
+  addEventListener(storeGroupId, event, callback);
+  return validate(eventEmitter.once(event, callback, context), EventEmitter);
 }
 export function on(event, callback, storeGroupId, context) {
-  if (storeGroupId) addEventListener(storeGroupId, event, callback);
-  return eventEmitter.on(event, callback, context);
+  validate(arguments, ["string", "function", "string", "object="]);
+  addEventListener(storeGroupId, event, callback);
+  return validate(eventEmitter.on(event, callback, context), EventEmitter);
 }
 export function removeListenersByGroup(storeGroupId) {
+  validate(arguments, ["string"]);
   Object.entries(getStateForEventsGroup(storeGroupId)).forEach(
     ([event, callbacks]) => {
       callbacks.forEach(callback => {
@@ -30,16 +33,23 @@ export function removeListenersByGroup(storeGroupId) {
   removeEventListeners(storeGroupId);
 }
 export function removeListener(event, callback, microAppId, context) {
-  if (microAppId) removeEventListener(microAppId, event, callback);
-  return eventEmitter.removeListener(event, callback, context);
+  validate(arguments, ["string", "function", "string", "object="]);
+  removeEventListener(microAppId, event, callback);
+  return validate(
+    eventEmitter.removeListener(event, callback, context),
+    EventEmitter
+  );
 }
 export function removeAllListeners(event) {
+  validate(arguments, ["string"]);
   return eventEmitter.removeAllListeners(event);
 }
 export function listeners(event) {
+  validate(arguments, ["string"]);
   return eventEmitter.listeners(event);
 }
 export function emit(event, ...args) {
+  validate(event, "string");
   if (isEventsDebugActivated() && event.indexOf("devtool") === -1) {
     console.info(
       `%cEvent emitted : %c"${event}"`,
@@ -52,35 +62,51 @@ export function emit(event, ...args) {
   return eventEmitter.emit(event, ...args);
 }
 
-export function redirectOnEvent(message, path, { emitBefore, emitAfter } = {}) {
-  on(message, (args = {}) => {
-    emitBefore && emit(emitBefore);
-    // We replace parameters in path by args value. Parameters start with `:`
-    const parsedPath = (path.match(/:\w+/g) || []).reduce(
-      (p, arg) => p.replace(arg, args[arg.substr(1)]),
-      path
-    );
-    browserHistory.push(parsedPath);
-    emitAfter && emit(emitAfter);
-  });
+export function redirectOnEvent(
+  eventsGroupId,
+  message,
+  path,
+  { emitBefore, emitAfter } = {}
+) {
+  validate(arguments, [
+    "string",
+    "string",
+    "string",
+    "Object.<string, string>=",
+  ]);
+  on(
+    message,
+    (args = {}) => {
+      if (emitBefore) emit(emitBefore);
+      // We replace parameters in path by args value. Parameters start with `:`
+      const parsedPath = (path.match(/:\w+/g) || []).reduce(
+        (p, arg) => p.replace(arg, args[arg.substr(1)]),
+        path
+      );
+      if (browserHistory.location.pathname === parsedPath) return;
+      browserHistory.push(parsedPath);
+      if (emitAfter) emit(emitAfter);
+    },
+    eventsGroupId
+  );
 }
-export function mutateEvent(sourceEvent, targetEvent, transformArgsFn) {
-  on(sourceEvent, (...args) => {
-    if (!args.length) {
-      return emit(targetEvent);
-    }
-    return typeof transformArgsFn === "function"
-      ? emit(targetEvent, transformArgsFn(...args))
-      : emit(targetEvent, ...args);
-  });
-}
-export function reactToEvent(message, fn) {
-  if (typeof fn !== "function") {
-    console.log(
-      `trying to add a reaction funtion, but the reactionFunction argument is not a function:`,
-      fn
-    );
-    return;
-  }
-  on(message, fn);
+export function mutateEvent(
+  eventsGroupId,
+  sourceEvent,
+  targetEvent,
+  transformArgsFn
+) {
+  validate(arguments, ["string", "string", "string", "function="]);
+  on(
+    sourceEvent,
+    (...args) => {
+      if (!args.length) {
+        return emit(targetEvent);
+      }
+      return typeof transformArgsFn === "function"
+        ? emit(targetEvent, ...transformArgsFn(...args))
+        : emit(targetEvent, ...args);
+    },
+    eventsGroupId
+  );
 }

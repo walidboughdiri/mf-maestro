@@ -72,7 +72,7 @@ export function addMicroAppLoadWatcher(appName, callback, wrapperId) {
     appName,
     callback,
     type: "addMicroAppLoadWatcher",
-    wrapperId
+    wrapperId,
   });
 }
 
@@ -85,13 +85,13 @@ export function storeBlockedNavigation(targetLocation, unblockFn) {
   store.dispatch({
     targetLocation,
     type: "storeBlockedNavigation",
-    unblockFn
+    unblockFn,
   });
 }
 
 export function resetNavigation() {
   store.dispatch({
-    type: "resetNavigation"
+    type: "resetNavigation",
   });
 }
 
@@ -107,6 +107,7 @@ export function deleteMicroAppLoadWatchers(microAppName) {
 }
 
 export function addEventListener(storeGroupId, event, callback) {
+  validate(arguments, ["string", "string", "function"]);
   store.dispatch({ event, callback, type: "addEventListener", storeGroupId });
 }
 
@@ -115,29 +116,42 @@ export function removeEventListener(storeGroupId, event, callback) {
     event,
     callback,
     type: "removeEventListener",
-    storeGroupId
+    storeGroupId,
   });
 }
 
 export function removeEventListeners(storeGroupId) {
+  validate(arguments, ["string"]);
   store.dispatch({ type: "removeEventListeners", storeGroupId });
 }
 
 export function getStateForEventsGroup(storeGroupId) {
+  validate(arguments, ["string"]);
   return store.getState().eventListeners[storeGroupId] || {};
 }
 
+export function appIsInitialized() {
+  return store.getState().appInitiliazed;
+}
+
+export function initializeApp() {
+  store.dispatch({ type: "initializeApp" });
+}
+
 const initialState = {
+  appInitiliazed: false,
   eventsDebug: true,
   eventListeners: {},
   loadCallbacks: {},
   loadedMicroApps: {},
   loadedManifests: {},
-  navigation: {}
+  navigation: {},
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case "initializeApp":
+      return { ...state, appInitiliazed: true };
     case "removeEventListener":
       if (
         typeof state.eventListeners[action.storeGroupId] !== "object" ||
@@ -155,9 +169,9 @@ const reducer = (state = initialState, action) => {
               action.event
             ].filter(callback => {
               callback !== action.callback;
-            })
-          }
-        }
+            }),
+          },
+        },
       };
     case "removeEventListeners":
       if (typeof state.eventListeners[action.storeGroupId] === "object") {
@@ -172,7 +186,7 @@ const reducer = (state = initialState, action) => {
         !Array.isArray(state.eventListeners[action.storeGroupId][action.event])
       ) {
         state.eventListeners[action.storeGroupId][action.event] = [
-          action.callback
+          action.callback,
         ];
         return state;
       }
@@ -192,15 +206,15 @@ const reducer = (state = initialState, action) => {
             ...state.eventListeners[action.storeGroupId],
             [action.event]: [
               ...state.eventListeners[action.storeGroupId][action.event],
-              ...[action.callback]
-            ]
-          }
-        }
+              ...[action.callback],
+            ],
+          },
+        },
       };
     case "resetNavigation":
       return {
         ...state,
-        navigation: {}
+        navigation: {},
       };
     case "storeBlockedNavigation":
       return {
@@ -208,8 +222,8 @@ const reducer = (state = initialState, action) => {
         navigation: {
           ...state.navigation,
           targetLocation: action.targetLocation,
-          unblockFn: action.unblockFn
-        }
+          unblockFn: action.unblockFn,
+        },
       };
     case "toggleEventsDebug":
       return { ...state, eventsDebug: !state.eventsDebug };
@@ -226,9 +240,9 @@ const reducer = (state = initialState, action) => {
           ...state.loadCallbacks,
           [action.appName]: {
             ...state.loadCallbacks[action.appName],
-            [action.wrapperId]: action.callback
-          }
-        }
+            [action.wrapperId]: action.callback,
+          },
+        },
       };
     case "deActivateEventsDebug":
       return { ...state, eventsDebug: false };
@@ -239,9 +253,9 @@ const reducer = (state = initialState, action) => {
           ...state.loadedMicroApps,
           [action.microAppName]: {
             state: "loading",
-            callback: action.callback
-          }
-        }
+            callback: action.callback,
+          },
+        },
       };
     case "addMicroApp":
       return {
@@ -250,9 +264,9 @@ const reducer = (state = initialState, action) => {
           ...state.loadedMicroApps,
           [action.microAppName]: {
             state: "loaded",
-            ...action.microAppObject
-          }
-        }
+            ...action.microAppObject,
+          },
+        },
       };
     case "loadManifest":
       return {
@@ -261,9 +275,9 @@ const reducer = (state = initialState, action) => {
           ...state.loadedManifests,
           [action.url]: {
             state: "loading",
-            content: null
-          }
-        }
+            content: null,
+          },
+        },
       };
     case "storeManifest":
       return {
@@ -272,9 +286,9 @@ const reducer = (state = initialState, action) => {
           ...state.loadedManifests,
           [action.url]: {
             state: "loaded",
-            content: action.content
-          }
-        }
+            content: action.content,
+          },
+        },
       };
     case "storeManifestError":
       return {
@@ -283,9 +297,9 @@ const reducer = (state = initialState, action) => {
           ...state.loadedManifests,
           [action.url]: {
             state: "error",
-            content: action.error
-          }
-        }
+            content: action.error,
+          },
+        },
       };
     default:
       return state;

@@ -2,15 +2,17 @@ import { browserHistory } from "./BrowserHistory";
 import {
   navigationState,
   resetNavigation,
-  storeBlockedNavigation
+  storeBlockedNavigation,
 } from "./AppStateStore";
 import { emit } from "./events";
 
 export function blockNavigation() {
-  const unblockFn = browserHistory.block((location, action) => {
+  const unblockFn = browserHistory.block(location => {
     const targetLocation = location && location.pathname;
-    storeBlockedNavigation({ unblockFn, targetLocation });
-    emit("io:location:will-change", { targetLocation });
+    storeBlockedNavigation(targetLocation, unblockFn);
+    emit("navigation:location:will-change", { targetLocation });
+    //block navigation : https://github.com/ReactTraining/history/blob/master/modules/createBrowserHistory.js
+    return false;
   });
 }
 
@@ -23,5 +25,5 @@ export function unblockNavigation() {
     browserHistory.replace(state.targetLocation);
   }
   resetNavigation();
-  emit("io:location:changed", { location: state.targetLocation });
+  emit("navigation:location:changed", { location: state.targetLocation });
 }

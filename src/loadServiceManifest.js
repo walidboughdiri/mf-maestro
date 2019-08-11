@@ -8,7 +8,7 @@ export async function appManifestLoad(manifestUrl) {
         return {
           error: response.statusText,
           errorDetail: `Unable to load the manifest file for '${manifestUrl}' (404)`,
-          response
+          response,
         };
     }
   }
@@ -30,7 +30,7 @@ export async function loadAndStoreManifest(manifestUrl) {
       store.dispatch({
         type: "storeManifest",
         url: manifestUrl,
-        content: loadedManifest
+        content: loadedManifest,
       });
       return true;
     }
@@ -38,7 +38,7 @@ export async function loadAndStoreManifest(manifestUrl) {
     store.dispatch({
       type: "storeManifestError",
       url: manifestUrl,
-      error
+      error,
     });
     return "error";
   }

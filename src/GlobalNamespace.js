@@ -5,9 +5,8 @@ import {
   mutateEvent,
   on,
   once,
-  reactToEvent,
   redirectOnEvent,
-  removeListener
+  removeListener,
 } from "./events";
 
 if (window.MfMaestro === undefined) {
@@ -22,11 +21,10 @@ if (window.MfMaestro === undefined) {
     mutateEvent,
     on,
     once,
-    reactToEvent,
     removeListener,
     redirectOnEvent,
     toggleEventsDebug,
-    state: () => store.getState()
+    state: () => store.getState(),
   };
 } else {
   if (typeof window.MfMaestro !== "object") {
