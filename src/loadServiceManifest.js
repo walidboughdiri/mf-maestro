@@ -1,4 +1,4 @@
-import { isManifestLoaded, isManifestLoading, store } from "./AppStateStore";
+import { isManifestLoaded, isManifestLoading, store } from "./store/store";
 
 export async function appManifestLoad(manifestUrl) {
   const response = await fetch(manifestUrl);

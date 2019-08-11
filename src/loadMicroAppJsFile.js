@@ -4,7 +4,7 @@ import {
   isMicroAppLoading,
   microAppConfigFromState,
   store,
-} from "./AppStateStore";
+} from "./store/store";
 
 export function loadMicroAppJsFile(manifestUrl, microAppName, wrapperId) {
   validate(arguments, ["string", "string", "string"]);

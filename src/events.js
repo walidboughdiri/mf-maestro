@@ -6,7 +6,7 @@ import {
   isEventsDebugActivated,
   removeEventListener,
   removeEventListeners,
-} from "./AppStateStore";
+} from "./store/store";
 import { browserHistory } from "./BrowserHistory";
 
 const eventEmitter = new EventEmitter();

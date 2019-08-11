@@ -1,5 +1,5 @@
 import "regenerator-runtime/runtime";
-import "./AppStateStore";
+import "./store/store";
 import "./GlobalNamespace";
 import { validate } from "byContract";
 import React from "react";

@@ -9,7 +9,7 @@ import {
   isMicroAppLoaded,
   microAppConfigFromState,
   microAppState,
-} from "./AppStateStore";
+} from "./store/store";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
 import useEvents from "./effects/useEvents";
 const renderers = {

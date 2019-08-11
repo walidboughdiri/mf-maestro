@@ -1,4 +1,4 @@
-import { instantiate, store, toggleEventsDebug } from "./AppStateStore";
+import { instantiate, store, toggleEventsDebug } from "./store/store";
 import {
   emit,
   listeners,
