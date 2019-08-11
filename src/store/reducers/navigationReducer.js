@@ -1,4 +1,4 @@
-export default function navigationReducer(state, action) {
+export default function navigationReducer(state = {}, action) {
   switch (action.type) {
     case "resetNavigation":
       return {};

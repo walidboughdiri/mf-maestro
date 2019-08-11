@@ -1,4 +1,4 @@
-import { browserHistory } from "./BrowserHistory";
+import { browserHistory } from "./browserHistory";
 import {
   navigationState,
   resetNavigation,

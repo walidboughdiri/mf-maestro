@@ -1,4 +1,4 @@
-export default function loadCallbacksReducer(state, action) {
+export default function loadCallbacksReducer(state = {}, action) {
   switch (action.type) {
     case "deleteMicroAppLoadWatchers":
       delete state[action.appName];

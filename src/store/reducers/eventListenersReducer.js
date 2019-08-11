@@ -1,4 +1,4 @@
-export default function eventListenersReducer(state, action) {
+export default function eventListenersReducer(state = {}, action) {
   switch (action.type) {
     case "removeEventListener":
       if (

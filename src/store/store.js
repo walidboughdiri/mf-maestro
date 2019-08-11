@@ -5,17 +5,7 @@ import loadedManifestsReducer from "./reducers/loadedManifestsReducer";
 import loadedMicroAppsReducer from "./reducers/loadedMicroAppsReducer";
 import navigationReducer from "./reducers/navigationReducer";
 
-const initialState = {
-  appInitiliazed: false,
-  eventsDebug: true,
-  eventListeners: {},
-  loadCallbacks: {},
-  loadedMicroApps: {},
-  loadedManifests: {},
-  navigation: {},
-};
-
-const reducer = (state = initialState, action) => {
+const reducer = (state = {}, action) => {
   return {
     eventListeners: eventListenersReducer(state.eventListeners, action),
     loadCallbacks: loadCallbacksReducer(state.loadCallbacks, action),
@@ -23,15 +13,12 @@ const reducer = (state = initialState, action) => {
     loadedManifests: loadedManifestsReducer(state.loadedManifests, action),
     navigation: navigationReducer(state.navigation, action),
     appInitialized:
-      action.type === "initializeApp" ? true : state.appInitialized,
+      action.type === "initializeApp" ? true : state.appInitialized || false,
     eventsDebug:
       action.type === "toggleEventsDebug"
         ? !state.eventsDebug
-        : state.eventsDebug,
+        : state.eventsDebug || true,
   };
 };
 
-export const store = createStore(
-  reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+export const store = createStore(reducer);
