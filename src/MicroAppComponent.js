@@ -14,7 +14,8 @@ import {
 } from "./store/states/loadedMicroApps";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
 import useEvents from "./effects/useEvents";
-const renderers = {
+
+const microAppTypes = {
   elm: NativeMicroApp,
 };
 
@@ -29,7 +30,7 @@ export default function MicroAppComponent(props) {
     props.manifestUrl || `/${props.serviceName}/assets/components.json`;
 
   const { t } = useTranslation();
-  let Renderer = null;
+  let MicroAppComponent = null;
   if (isManifestLoaded(manifestUrl, microAppId)) {
     const microAppConfig = microAppConfigFromState(
       microAppId,
@@ -37,7 +38,7 @@ export default function MicroAppComponent(props) {
       props.app
     );
     if (typeof microAppConfig !== "object") return;
-    Renderer = renderers[microAppConfig.type];
+    MicroAppComponent = microAppTypes[microAppConfig.type];
   }
   if (!isMicroAppLoaded(props.app)) {
     addMicroAppLoadWatcher(
@@ -83,7 +84,7 @@ export default function MicroAppComponent(props) {
     );
   }
   return (
-    <Renderer
+    <MicroAppComponent
       app={props.app}
       cssClass={props.cssClass || props.app}
       microAppId={microAppId}
