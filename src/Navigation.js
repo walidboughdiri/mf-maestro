@@ -3,7 +3,7 @@ import {
   navigationState,
   resetNavigation,
   storeBlockedNavigation,
-} from "./store/store";
+} from "./store/states/navigation";
 import { emit } from "./events";
 
 export function blockNavigation() {

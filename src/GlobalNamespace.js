@@ -1,4 +1,10 @@
-import { instantiate, store, toggleEventsDebug } from "./store/store";
+import { validate } from "byContract";
+import { store } from "./store/store";
+import { toggleEventsDebug } from "./store/states/app";
+import {
+  deleteMicroAppLoadWatchers,
+  getMicroAppLoadWatchers,
+} from "./store/states/loadCallbacks";
 import {
   emit,
   listeners,
@@ -9,6 +15,13 @@ import {
   removeListener,
 } from "./events";
 
+function instantiate(microAppName) {
+  validate(arguments, ["string"]);
+  Object.values(getMicroAppLoadWatchers(microAppName)).forEach(watcher => {
+    watcher();
+  });
+  deleteMicroAppLoadWatchers(microAppName);
+}
 if (window.MfMaestro === undefined) {
   window.MfMaestro = {
     registerMicroApp: function(microAppName, microAppObject) {

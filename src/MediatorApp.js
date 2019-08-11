@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Router } from "react-router-dom";
 import { browserHistory } from "./BrowserHistory";
 import useEvents from "./effects/useEvents";
-import { appIsInitialized, initializeApp } from "./store/store";
+import { appIsInitialized, initializeApp } from "./store/states/app";
 
 export default function MediatorApp(props) {
   const [appId, events] = useEvents("MediatorApp");

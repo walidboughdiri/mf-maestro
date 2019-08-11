@@ -3,10 +3,10 @@ import EventEmitter from "eventemitter3";
 import {
   addEventListener,
   getStateForEventsGroup,
-  isEventsDebugActivated,
   removeEventListener,
   removeEventListeners,
-} from "./store/store";
+} from "./store/states/eventListeners";
+import { isEventsDebugActivated } from "./store/states/app";
 import { browserHistory } from "./BrowserHistory";
 
 const eventEmitter = new EventEmitter();

@@ -3,13 +3,15 @@ import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { loadAndStoreManifest } from "./loadServiceManifest";
 import { loadMicroAppJsFile } from "./loadMicroAppJsFile";
+import { addMicroAppLoadWatcher } from "./store/states/loadCallbacks";
 import {
-  addMicroAppLoadWatcher,
   isManifestLoaded,
-  isMicroAppLoaded,
   microAppConfigFromState,
+} from "./store/states/loadedManifests";
+import {
+  isMicroAppLoaded,
   microAppState,
-} from "./store/store";
+} from "./store/states/loadedMicroApps";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
 import useEvents from "./effects/useEvents";
 const renderers = {
