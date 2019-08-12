@@ -3,11 +3,20 @@ import PropTypes from "prop-types";
 import { Router } from "react-router-dom";
 import { browserHistory } from "./browserHistory";
 import useEvents from "./effects/useEvents";
-import configureApp from "./services/configureApp";
 
 export default function MediatorApp(props) {
   const [appId, events] = useEvents("MediatorApp");
-  configureApp(props.init, events);
+
+  if (!appIsInitialized() && props.init) {
+    initializeApp();
+    const config = props.init({
+      mutateEvent: events.mutateEvent,
+      on: events.on,
+      once: events.once,
+      redirectOnEvent: events.redirectOnEvent,
+    });
+  }
+
   const MainPage = props.mainPage;
   return (
     <Router history={browserHistory}>

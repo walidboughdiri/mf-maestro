@@ -6,22 +6,22 @@ export default React.memo(NativeMicroApp);
 
 function NativeMicroApp(props) {
   useEffect(() => {
-    props.microAppState.start(props.microAppId, props.params, {
+    props.microAppState.start(props.groupRef, props.params, {
       events: props.scopedEventsFn,
       navigation,
     });
 
     return () => {
-      props.microAppState.stop(props.microAppId);
+      props.microAppState.stop(props.groupRef);
     };
   }, []);
-  return <div id={props.microAppId} className={props.cssClass}></div>;
+  return <div data-id="app-wrapper" className="app-wrapper"></div>;
 }
 
 NativeMicroApp.propTypes = {
   app: PropTypes.string.isRequired,
   cssClass: PropTypes.string,
-  microAppId: PropTypes.string.isRequired,
+  groupRef: PropTypes.string.isRequired,
   microAppState: PropTypes.object.isRequired,
   params: PropTypes.object,
   scopedEventsFn: PropTypes.objectOf(PropTypes.func).isRequired,

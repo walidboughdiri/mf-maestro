@@ -16,3 +16,12 @@ export function appIsInitialized() {
 export function initializeApp() {
   store.dispatch({ type: "initializeApp" });
 }
+
+export function setMicroAppLoadingComponent(component) {
+  if (typeof component !== "function") return;
+  store.dispatch({ type: "setMicroAppLoadingComponent", component });
+}
+
+export function getMicroAppLoadingComponent() {
+  return store.getState().microAppLoadingComponent;
+}

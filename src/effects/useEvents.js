@@ -12,47 +12,47 @@ import {
   removeListenersByGroup,
 } from "../events";
 
-export default function useEvents(prefix) {
+export default function useEvents(ref) {
   validate(arguments, ["string="]);
-  const [microAppId] = useState([prefix, uuidv4()].join(":"));
+  const [groupRef] = useState(ref || uuidv4());
   useEffect(() => {
     return () => {
-      removeListenersByGroup(microAppId);
+      removeListenersByGroup(groupRef);
     };
   });
 
   const scopedEventsFn = {
     emit: function(event, ...args) {
       validate(event, "string");
-      return validate(emit(event, microAppId, ...args), "boolean");
+      return validate(emit(event, groupRef, ...args), "boolean");
     },
     mutateEvent: function(sourceEvent, targetEvent, transformArgsFn) {
       validate(arguments, ["string", "string", "function="]);
-      return mutateEvent(microAppId, sourceEvent, targetEvent, transformArgsFn);
+      return mutateEvent(groupRef, sourceEvent, targetEvent, transformArgsFn);
     },
     on: function(event, callback, context) {
       validate(arguments, ["string", "function", "object="]);
-      return validate(on(event, callback, microAppId, context), EventEmitter);
+      return validate(on(event, callback, groupRef, context), EventEmitter);
     },
     once: function(event, callback, context) {
       validate(arguments, ["string", "function", "object="]);
-      return validate(once(event, callback, microAppId, context), EventEmitter);
+      return validate(once(event, callback, groupRef, context), EventEmitter);
     },
     redirectOnEvent: function(event, path, options) {
       validate(arguments, ["string", "string", "Object.<string, string>="]);
-      return redirectOnEvent(microAppId, event, path, options);
+      return redirectOnEvent(groupRef, event, path, options);
     },
     removeListener: function(event, callback, context) {
       validate(arguments, ["string", "function", "object="]);
       return validate(
-        removeListener(event, callback, microAppId, context),
+        removeListener(event, callback, groupRef, context),
         EventEmitter
       );
     },
   };
 
   return validate(
-    [microAppId, scopedEventsFn],
+    [groupRef, scopedEventsFn],
     ["string", "Object.<string, function>"]
   );
 }

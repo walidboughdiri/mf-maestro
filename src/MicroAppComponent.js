@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useTranslation } from "react-i18next";
 import { loadAndStoreManifest } from "./loadServiceManifest";
 import { loadMicroAppJsFile } from "./loadMicroAppJsFile";
 import { addMicroAppLoadWatcher } from "./store/states/loadCallbacks";
+import { getMicroAppLoadingComponent } from "./store/states/app";
 import {
   isManifestLoaded,
   microAppConfigFromState,
@@ -24,21 +24,24 @@ export default function MicroAppComponent(props) {
   const [isMicroAppLaunchable, setMicroAppLaunchable] = useState(
     isMicroAppLoaded(props.app)
   );
-  const [microAppId, scopedEventsFn] = useEvents(props.app);
-  console.log(`%crendering ${microAppId} component`, "color:red;", props);
+  const [groupRef, scopedEventsFn] = useEvents(props.groupRef);
+  console.log(
+    `%crendering ${groupRef}/${props.app} component`,
+    "color:red;",
+    props
+  );
   const manifestUrl =
     props.manifestUrl || `/${props.serviceName}/assets/components.json`;
 
-  const { t } = useTranslation();
-  let MicroAppComponent = null;
-  if (isManifestLoaded(manifestUrl, microAppId)) {
+  let Renderer = null;
+  if (isManifestLoaded(manifestUrl, groupRef)) {
     const microAppConfig = microAppConfigFromState(
-      microAppId,
+      groupRef,
       manifestUrl,
       props.app
     );
     if (typeof microAppConfig !== "object") return;
-    MicroAppComponent = microAppTypes[microAppConfig.type];
+    Renderer = microAppTypes[microAppConfig.type];
   }
   if (!isMicroAppLoaded(props.app)) {
     addMicroAppLoadWatcher(
@@ -48,7 +51,7 @@ export default function MicroAppComponent(props) {
           setMicroAppLaunchable(true);
         }
       },
-      microAppId
+      groupRef
     );
   }
   useEffect(() => {
@@ -63,7 +66,7 @@ export default function MicroAppComponent(props) {
         case true:
           break;
       }
-      switch (loadMicroAppJsFile(manifestUrl, props.app, microAppId)) {
+      switch (loadMicroAppJsFile(manifestUrl, props.app, groupRef)) {
         case "loaded":
           setMicroAppLaunchable(true);
           break;
@@ -76,27 +79,32 @@ export default function MicroAppComponent(props) {
     loadMicroApp();
   });
 
-  if (!isMicroAppLaunchable) {
-    return (
-      <div>
-        {microAppId} - {loadStatus}
-      </div>
-    );
-  }
-  return (
-    <MicroAppComponent
+  const LoadingComponent = getMicroAppLoadingComponent();
+
+  let content = !isMicroAppLaunchable ? (
+    <LoadingComponent groupRef={groupRef} loadStatus={loadStatus} />
+  ) : (
+    <Renderer
       app={props.app}
+      autostart={props.autostart}
       cssClass={props.cssClass || props.app}
-      microAppId={microAppId}
+      groupRef={groupRef}
       microAppState={microAppState(props.app)}
       params={props.params}
       scopedEventsFn={scopedEventsFn}
     />
   );
+
+  return (
+    <div id={groupRef} className={props.cssClass}>
+      {content}
+    </div>
+  );
 }
 
 MicroAppComponent.propTypes = {
   app: PropTypes.string.isRequired,
+  groupRef: PropTypes.string,
   cssClass: PropTypes.string,
   manifestUrl: PropTypes.string.isRequired,
   params: PropTypes.object,
