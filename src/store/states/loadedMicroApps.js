@@ -1,7 +1,7 @@
 import { validate } from "byContract";
 import { store } from "../store";
 
-export function microAppState(appName) {
+export function getMicroAppState(appName) {
   validate(arguments, ["string"]);
   return store.getState().loadedMicroApps[appName];
 }
