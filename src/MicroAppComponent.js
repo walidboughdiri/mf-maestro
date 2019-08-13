@@ -13,6 +13,19 @@ const microAppTypes = {
   elm: NativeMicroApp,
 };
 
+const loadStatuses = [
+  "loadingCode",
+  "loadingManifest",
+  "propsChanged",
+  "canStart",
+];
+
+function getLoadStatus(status) {
+  if (!loadStatuses.includes(status))
+    throw `Trying to get an unknown status : ${status}`;
+  return status;
+}
+
 export default function MicroAppComponent(props) {
   const appRef = useRef(null);
   const manifestUrlRef = useRef(null);
@@ -33,47 +46,50 @@ export default function MicroAppComponent(props) {
 
   const [loadStatus, setLoadStatus] = useState(
     microAppState
-      ? "startable"
+      ? getLoadStatus("canStart")
       : microAppConfig
-      ? "loading microApp"
-      : "loading manifest"
+      ? getLoadStatus("loadingCode")
+      : getLoadStatus("loadingManifest")
   );
+  function updateLoadStatus(status) {
+    if (!loadStatuses.includes(status))
+      throw `Trying to set an unknown status to loadStatus : ${status}`;
+    if (status === loadStatus) return;
+    setLoadStatus(status);
+  }
   console.log(`••••rendering ${groupRef}/${props.app} (${loadStatus})`, props);
   if (
     props.app !== appRef.current ||
     props.manifestUrl !== manifestUrlRef.current
   ) {
-    if (appRef.current && manifestUrlRef.current && loadStatus === "startable")
-      setLoadStatus("props changed");
+    if (
+      appRef.current &&
+      manifestUrlRef.current &&
+      loadStatus === getLoadStatus("canStart")
+    )
+      updateLoadStatus("propsChanged");
     appRef.current = props.app;
     manifestUrlRef.current = props.manifestUrl;
   }
   if (!microAppState) {
     addMicroAppLoadWatcher(
       props.app,
-      () => setLoadStatus("startable"),
+      () => updateLoadStatus("canStart"),
       groupRef
     );
   }
   useEffect(() => {
     async function loadMicroApp() {
-      switch (await loadAndStoreManifest(manifestUrl)) {
-        case "loading":
-          if (loadStatus !== "loading manifest")
-            setLoadStatus("loading manifest");
-          return;
-        case "loaded":
-          break;
-        case true:
-          break;
+      if ((await loadAndStoreManifest(manifestUrl)) === "loading") {
+        updateLoadStatus("loadingManifest");
+        return;
       }
       switch (loadMicroAppJsFile(manifestUrl, props.app, groupRef)) {
         case "loaded":
-          if (loadStatus !== "startable") setLoadStatus("startable");
+          updateLoadStatus("canStart");
           break;
         case "loading":
-          if (loadStatus !== "loading microApp")
-            setLoadStatus("loading microApp");
+          updateLoadStatus("loadingCode");
           break;
       }
     }
@@ -82,7 +98,7 @@ export default function MicroAppComponent(props) {
 
   const LoadingComponent = getMicroAppLoadingComponent();
   let content =
-    loadStatus !== "startable" ? (
+    loadStatus !== getLoadStatus("canStart") ? (
       <LoadingComponent groupRef={groupRef} loadStatus={loadStatus} />
     ) : (
       <Renderer
