@@ -25,7 +25,6 @@ function instantiate(microAppName) {
 if (window.MfMaestro === undefined) {
   window.MfMaestro = {
     registerMicroApp: function(microAppName, microAppObject) {
-      console.log(`%cregisterMicroApp ${microAppName}`, "color:green;");
       store.dispatch({ microAppName, microAppObject, type: "addMicroApp" });
       instantiate(microAppName);
     },

@@ -9,6 +9,7 @@ function NativeMicroApp(props) {
     props.microAppState.start(props.groupRef, props.params, {
       events: props.scopedEventsFn,
       navigation,
+      queryParams: props.queryParams,
     });
 
     return () => {
@@ -23,6 +24,7 @@ NativeMicroApp.propTypes = {
   cssClass: PropTypes.string,
   groupRef: PropTypes.string.isRequired,
   microAppState: PropTypes.object.isRequired,
+  queryParams: PropTypes.object,
   params: PropTypes.object,
   scopedEventsFn: PropTypes.objectOf(PropTypes.func).isRequired,
 };

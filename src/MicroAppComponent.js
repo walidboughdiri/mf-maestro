@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
+import JSON5 from "json5";
 import { loadAndStoreManifest } from "./loadServiceManifest";
 import { loadMicroAppJsFile } from "./loadMicroAppJsFile";
 import { addMicroAppLoadWatcher } from "./store/states/loadCallbacks";
@@ -96,6 +97,11 @@ export default function MicroAppComponent(props) {
     loadMicroApp();
   });
 
+  const queryVar = new URL(window.location).searchParams.get(groupRef);
+  const queryParams = props.queryParser
+    ? props.queryParser(queryVar)
+    : JSON5.parse(queryVar);
+
   const LoadingComponent = getMicroAppLoadingComponent();
   let content =
     loadStatus !== getLoadStatus("canStart") ? (
@@ -106,6 +112,7 @@ export default function MicroAppComponent(props) {
         autostart={props.autostart}
         cssClass={props.cssClass || props.app}
         groupRef={groupRef}
+        queryParams={queryParams}
         microAppState={microAppState}
         params={props.params}
         scopedEventsFn={scopedEventsFn}
@@ -121,9 +128,10 @@ export default function MicroAppComponent(props) {
 
 MicroAppComponent.propTypes = {
   app: PropTypes.string.isRequired,
-  groupRef: PropTypes.string,
   cssClass: PropTypes.string,
+  groupRef: PropTypes.string,
   manifestUrl: PropTypes.string.isRequired,
   params: PropTypes.object,
+  queryParser: PropTypes.func,
   serviceName: PropTypes.string,
 };

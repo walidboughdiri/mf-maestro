@@ -14,15 +14,15 @@ module.exports = {
           loader: "babel-loader",
           options: {
             presets: ["@babel/preset-env", "@babel/preset-react"],
-            plugins: [["@babel/plugin-proposal-decorators", { legacy: true }]]
-          }
-        }
-      }
-    ]
+            plugins: [["@babel/plugin-proposal-decorators", { legacy: true }]],
+          },
+        },
+      },
+    ],
   },
   output: {
     filename: "index.js",
     libraryTarget: "umd",
-    path: path.resolve(__dirname, "lib")
-  }
+    path: path.resolve(__dirname, "lib"),
+  },
 };
