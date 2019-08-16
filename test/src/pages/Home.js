@@ -15,8 +15,8 @@ export default function Home() {
         params={{ a: 2 }}
       />
       <MicroAppComponent
-        app="micro-app-1"
-        groupRef="home2"
+        app="micro-app-3"
+        groupRef="mac3"
         manifestUrl="http://localhost:3000/assets/manifest.json"
       />
     </div>

@@ -5,7 +5,10 @@ import { loadAndStoreManifest } from "./loadServiceManifest";
 import { loadMicroAppJsFile } from "./loadMicroAppJsFile";
 import { addMicroAppLoadWatcher } from "./store/states/loadCallbacks";
 import { getMicroAppLoadingComponent } from "./store/states/app";
-import { microAppConfigFromState } from "./store/states/loadedManifests";
+import {
+  addManifestLoadListener,
+  microAppConfigFromState,
+} from "./store/states/loadedManifests";
 import { getMicroAppState } from "./store/states/loadedMicroApps";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
 import useEvents from "./effects/useEvents";
@@ -17,6 +20,8 @@ const microAppTypes = {
 const loadStatuses = [
   "loadingCode",
   "loadingManifest",
+  "manifestLoaded",
+  "manifestNotLoaded",
   "propsChanged",
   "canStart",
 ];
@@ -49,8 +54,8 @@ export default function MicroAppComponent(props) {
     microAppState
       ? getLoadStatus("canStart")
       : microAppConfig
-      ? getLoadStatus("loadingCode")
-      : getLoadStatus("loadingManifest")
+      ? getLoadStatus("manifestLoaded")
+      : getLoadStatus("manifestNotLoaded")
   );
   function updateLoadStatus(status) {
     if (!loadStatuses.includes(status))
@@ -72,24 +77,40 @@ export default function MicroAppComponent(props) {
     appRef.current = props.app;
     manifestUrlRef.current = props.manifestUrl;
   }
-  if (!microAppState) {
-    addMicroAppLoadWatcher(
-      props.app,
-      () => updateLoadStatus("canStart"),
-      groupRef
-    );
-  }
   useEffect(() => {
     async function loadMicroApp() {
-      if ((await loadAndStoreManifest(manifestUrl)) === "loading") {
+      const lm = await loadAndStoreManifest(manifestUrl);
+      if (lm === "loading") {
+        if (loadStatus === getLoadStatus("loadingManifest")) return;
+        addManifestLoadListener(manifestUrl, `${props.app}@${groupRef}`, () => {
+          updateLoadStatus("manifestLoaded");
+        });
         updateLoadStatus("loadingManifest");
         return;
       }
-      switch (loadMicroAppJsFile(manifestUrl, props.app, groupRef)) {
+      const microAppLoad = loadMicroAppJsFile(manifestUrl, props.app, groupRef);
+      switch (microAppLoad) {
+        case true:
+          if (loadStatus === getLoadStatus("loadingCode")) break;
+          addMicroAppLoadWatcher(
+            props.app,
+            () => updateLoadStatus("canStart"),
+            groupRef
+          );
+          updateLoadStatus("loadingCode");
+
+          break;
         case "loaded":
+          if (loadStatus === getLoadStatus("canStart")) break;
           updateLoadStatus("canStart");
           break;
         case "loading":
+          if (loadStatus === getLoadStatus("loadingCode")) break;
+          addMicroAppLoadWatcher(
+            props.app,
+            () => updateLoadStatus("canStart"),
+            groupRef
+          );
           updateLoadStatus("loadingCode");
           break;
       }
@@ -119,8 +140,10 @@ export default function MicroAppComponent(props) {
       />
     );
 
+  const ref = `${props.app}@${groupRef}`;
+
   return (
-    <div id={groupRef} className={props.cssClass}>
+    <div id={groupRef} data-app-ref={ref} className={props.cssClass}>
       {content}
     </div>
   );

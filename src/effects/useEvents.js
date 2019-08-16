@@ -19,7 +19,7 @@ export default function useEvents(ref) {
     return () => {
       removeListenersByGroup(groupRef);
     };
-  });
+  }, []);
 
   const scopedEventsFn = {
     emit: function(event, ...args) {

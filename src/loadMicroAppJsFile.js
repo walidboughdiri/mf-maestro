@@ -16,10 +16,8 @@ export function loadMicroAppJsFile(manifestUrl, microAppName, wrapperId) {
     microAppName
   );
 
-  store.dispatch({
-    type: "loadMicroApp",
-    microAppName,
-  });
+  store.dispatch({ type: "loadMicroApp", microAppName });
+
   const script = document.createElement("script");
   script.src = microAppConfig.url;
   document.body.appendChild(script);

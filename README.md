@@ -6,3 +6,20 @@ You then defines your pages (where you aggregate micro-applications) and your ro
 On the backenside, you can implement a generic mechanism to notify micro-applications of a state's change (see the doc)
 
 ## Installation
+
+```
+
+```
+
+## Run test
+
+Tests are run in the demo app, with testcafe.
+You need to link the package with the demo app using [npm link](https://docs.npmjs.com/cli/link)
+
+```
+npm link
+cd test
+npm ci
+npm link mf-maestro
+testcafe chrome:headless tests/test.js
+```

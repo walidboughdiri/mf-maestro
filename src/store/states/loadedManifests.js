@@ -1,6 +1,20 @@
 import { validate } from "byContract";
 import { store } from "../store";
 
+export function addManifestLoadListener(manifestUrl, ref, listener) {
+  validate(arguments, ["string", "string", "function"]);
+  return store.dispatch({
+    listener,
+    manifestUrl,
+    ref,
+    type: "addManifestLoadListener",
+  });
+}
+
+export function getManifestLoadListeners(manifestUrl) {
+  return store.getState().loadedManifests[manifestUrl].listeners;
+}
+
 export function isManifestLoaded(manifestUrl) {
   validate(arguments, ["string"]);
   return isManifestInState(manifestUrl, "loaded");

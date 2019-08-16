@@ -7,15 +7,21 @@ export default function MainPage(props) {
   return (
     <div>
       MainPage Content
-      <ul>
+      <ul data-id="menu">
         <li>
-          <Link to="/">Home</Link>
+          <Link data-id="home" to="/">
+            Home
+          </Link>
         </li>
         <li>
-          <Link to="/about">About</Link>
+          <Link data-id="about" to="/about">
+            About
+          </Link>
         </li>
         <li>
-          <Link to="/topics">Topics</Link>
+          <Link data-id="topics" to="/topics">
+            Topics
+          </Link>
         </li>
       </ul>
       <hr />

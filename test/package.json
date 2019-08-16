@@ -25,6 +25,7 @@
     "babel-loader": "^8.0.6",
     "css-loader": "^3.0.0",
     "style-loader": "^0.23.1",
+    "testcafe": "^1.4.0",
     "webpack": "^4.34.0",
     "webpack-cli": "^3.3.4",
     "webpack-dev-server": "^3.7.1"

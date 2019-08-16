@@ -1,4 +1,5 @@
 import {
+  getManifestLoadListeners,
   isManifestLoaded,
   isManifestLoading,
 } from "./store/states/loadedManifests";
@@ -31,14 +32,20 @@ export async function loadAndStoreManifest(manifestUrl) {
   try {
     let loadedManifest = await appManifestLoad(manifestUrl);
     if (!loadedManifest.error) {
+      const listeners = getManifestLoadListeners(manifestUrl);
       store.dispatch({
         type: "storeManifest",
         url: manifestUrl,
         content: loadedManifest,
       });
+      Object.values(listeners).forEach(callback => {
+        callback();
+      });
+
       return true;
     }
   } catch (error) {
+    console.log(error);
     store.dispatch({
       type: "storeManifestError",
       url: manifestUrl,

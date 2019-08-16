@@ -9,17 +9,14 @@ export default function UsersIndex(props) {
       console.log('Event received in UsersIndex : "users:microApp2"');
     });
     events.on("users:change", (url, app) => {
-      setApp([
-        url || "http://localhost:3000/assets/manifest.json",
-        app || "micro-app-1",
-      ]);
+      setApp([url, app]);
     });
   });
 
   let content = null;
 
   if (manifestUrl === null || app === null) {
-    content = <div>no app loaded</div>;
+    content = <div data-id="no-app">no app loaded</div>;
   } else {
     content = (
       <MicroAppComponent
@@ -31,7 +28,7 @@ export default function UsersIndex(props) {
   }
 
   return (
-    <div className="users-index">
+    <div data-id="users-index" className="users-index">
       <div>users index for {app}</div>
       {content}
     </div>
