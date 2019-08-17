@@ -4,7 +4,7 @@ fixture`Getting Started`.page`http://localhost:3000`;
 const loadApp2 = ClientFunction(() =>
   window.MfMaestro.emit(
     "users:change",
-    "http://localhost:3000/assets/manifest.json",
+    "http://localhost:3000/assets/manifest2.json",
     "micro-app-2"
   )
 );
@@ -59,12 +59,29 @@ test("test loading app changing props", async t => {
     .ok();
 });
 
-test("mutate event and once event", async t => {
+test("mutate event and once/on event", async t => {
   await t.click(Selector("[data-app-ref='micro-app-1@home1'] [data-id='b3']"));
+  const consoleNode = Selector(
+    "[data-app-ref='micro-app-3@mac3'] [data-id='console']"
+  );
+  await t.expect(consoleNode.innerText).eql("ma3:onceEvent received");
+
+  await t.expect(consoleNode.getAttribute("once-event")).eql("1");
+  await t.expect(consoleNode.getAttribute("events-count")).eql("1");
+  await t.click(Selector("[data-app-ref='micro-app-1@home1'] [data-id='b3']"));
+  await t.expect(consoleNode.getAttribute("once-event")).eql("1");
+  await t.expect(consoleNode.getAttribute("events-count")).eql("2");
+});
+test("test blocked navigation", async t => {
+  await t.click(Selector("[data-id='about']"));
+  await loadApp2();
+  const button = Selector(
+    "[data-app-ref='micro-app-2@usersIndex'] [data-id='b1']"
+  );
+  await t.click(button);
+  await t.expect(button.innerText).eql("locked nav > click to unlock");
+  await t.click(button);
   await t
-    .expect(
-      Selector("[data-app-ref='micro-app-3@mac3'] [data-id='console']")
-        .innerText
-    )
-    .eql("ma3:onceEvent received");
+    .expect(ClientFunction(() => window.location.href)())
+    .eql("http://localhost:3000/");
 });

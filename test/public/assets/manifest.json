@@ -3,16 +3,5 @@
     "css": "/assets/micro-app-1/app.css",
     "type":"elm",
     "url":"/assets/micro-app-1/app.js"
-  },
-  "micro-app-2": {
-    "css": "/assets/micro-app-2/app.css",
-    "type":"elm",
-    "url":"/assets/micro-app-2/app.js"
-  },
-  "micro-app-3": {
-    "css": "/assets/micro-app-3/app.css",
-    "type":"elm",
-    "url":"/assets/micro-app-3/app.js"
   }
-
 }

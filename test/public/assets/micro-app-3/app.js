@@ -15,17 +15,18 @@
       consoleNode.setAttribute("once-event", onceEvent + 1);
       consoleNode.innerHTML = `ma3:onceEvent received`;
     });
+    events.on("ma3:onceEvent", () => {
+      const eventsCount = parseInt(consoleNode.getAttribute("events-count"));
+      consoleNode.setAttribute("events-count", eventsCount + 1);
+    });
   }
-
   function startMicroApp1(microAppId, params, { events, navigation }) {
     const node = document
       .getElementById(microAppId)
       .querySelector(`[data-id="app-wrapper"]`);
     node.innerHTML = `<div data-id="app">
     <p data-id="title">microApp3@${microAppId}</p>
-    <button data-id="b1">navigate from ${microAppId}</button>
-    <button data-id="b2">send loadApp event</button>
-    <div data-id="console" once-event="0"></div>
+    <div data-id="console" once-event="0" events-count="0"></div>
   </div>`;
     startEventsListeners(events, node.querySelector("[data-id='console']"));
   }

@@ -17,7 +17,7 @@ export default function Home() {
       <MicroAppComponent
         app="micro-app-3"
         groupRef="mac3"
-        manifestUrl="http://localhost:3000/assets/manifest.json"
+        manifestUrl="http://localhost:3000/assets/manifest2.json"
       />
     </div>
   );
