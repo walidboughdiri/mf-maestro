@@ -1,4 +1,6 @@
 src
-demo
-.babelrc
+test
+.eslintrc.js
+.gitignore
+.prettierrc.js
 webpack.config.js

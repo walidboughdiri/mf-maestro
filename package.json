@@ -1,18 +1,17 @@
 {
-  "name": "mf-maestro",
-  "version": "1.0.0",
-  "description": "a micro frontends mediator",
-  "scripts": {
-    "start": "webpack --watch --mode development",
-    "build": "webpack --mode production",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "micro services",
-    "micro frontends"
-  ],
   "author": "Charlie Eissen",
-  "license": "ISC",
+  "description": "a micro frontends mediator",
+  "dependencies": {
+    "bycontract": "^2.0.4",
+    "eventemitter3": "^4.0.0",
+    "i18next": "^17.0.6",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-hot-loader": "^4.11.1",
+    "react-i18next": "^10.11.4",
+    "react-router-dom": "^5.0.1",
+    "redux": "^4.0.4"
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
@@ -34,23 +33,25 @@
     "webpack-dev-server": "^3.7.1",
     "webpack-node-externals": "^1.7.2"
   },
-  "dependencies": {
-    "bycontract": "^2.0.4",
-    "eventemitter3": "^4.0.0",
-    "i18next": "^17.0.6",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-hot-loader": "^4.11.1",
-    "react-i18next": "^10.11.4",
-    "react-router-dom": "^5.0.1",
-    "redux": "^4.0.4"
-  },
+  "keywords": [
+    "micro services",
+    "micro frontends"
+  ],
+  "license": "ISC",
+  "main": "./dist/index.js",
+  "name": "mf-maestro",
   "peerDependencies": {
     "i18next": "^17.0.6",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
-    "react-i18next": "^10.11.4",
-    "redux": "^4.0.4"
-  }
+    "react-i18next": "^10.11.4"
+  },
+  "scripts": {
+    "build": "webpack --mode production",
+    "demo": "npm run build && cd test && npm start",
+    "start": "webpack --watch --mode development",
+    "test": "npm run build && cd test && (npm start &) && testcafe chrome:headless tests/test.js && ps a | grep webpack-dev-server | grep -v grep | awk '{kill -9 $1}'"
+  },
+  "version": "1.0.0"
 }

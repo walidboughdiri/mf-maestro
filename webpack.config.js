@@ -23,6 +23,6 @@ module.exports = {
   output: {
     filename: "index.js",
     libraryTarget: "umd",
-    path: path.resolve(__dirname, "lib"),
+    path: path.resolve(__dirname, "dist"),
   },
 };
