@@ -124,24 +124,58 @@ Urls are examples, you can organize things as you want (manifests ans js files c
 ### How do we use our micro applications with MfMaestro main app
 
 To load our micro applications, we need a main app, where you define your pages, the routing and events.
-We call this app the "Mediator"  since it is inspired by the (mediator pattern)[https://en.wikipedia.org/wiki/Mediator_pattern] ((Design Patterns: Elements of Reusable Object-Oriented Software)[https://en.wikipedia.org/wiki/Design_Patterns])
+We call this app the "Mediator"  since it is inspired by the [mediator pattern](https://en.wikipedia.org/wiki/Mediator_pattern) ([Design Patterns: Elements of Reusable Object-Oriented Software](https://en.wikipedia.org/wiki/Design_Patterns)
 
-To clarify the terms pages, routing and events, we show here a simple organization for a main app:
+To clarify the terms pages, routing and events, this is a simple organization for a main app:
 
 ```
 MyMediatorApp/
-  components/ <= here you'll find your own React components for your pages. You create a component here usually when you need to add logic (events handling, side effects...) to MfMaestro basic components (see demo file)[https://gitlab.com/calions/mf-maestro/blob/master/test/src/components/users/All.js]
-    users/ <= here you find all components (if you need to create them) for a part of your app
+  components/ <= here you'll find your own React components for your pages. You create a component here usually when you need to add logic (events handling, side effects...) to MfMaestro basic components [see demo file](https://gitlab.com/calions/mf-maestro/blob/master/test/src/components/users/All.js)
+    users/ <= (example) here you find all components (if you need to create them) for a part of your app
       edit.js
       list.js
       new.js
       show.js
-  index.js <= this file starts the app (see demo file)[https://gitlab.com/calions/mf-maestro/blob/master/test/src/index.js]
-  init.js <= this file export a function (run at the main app start) used mainly to define how our events are managed and config options (but you can add anything you want), but you could put this function in index.js (see demo file)[https://gitlab.com/calions/mf-maestro/blob/master/test/src/init.js]
+  index.js <= this file starts the app [see demo file](https://gitlab.com/calions/mf-maestro/blob/master/test/src/index.js)
+  init.js <= this file export a function (run at the main app start) used mainly to define how our events are managed and config options (but you can add anything you want), but you could put this function in index.js [see demo file](https://gitlab.com/calions/mf-maestro/blob/master/test/src/init.js)
   pages/ <= here you find all pages from the web app
-    MainPage.js <= here you can find the routing for example (see demo file)[https://gitlab.com/calions/mf-maestro/blob/master/test/src/pages/MainPage.js]
-    Page1.js <= here you have a real page with content (see demo file)[https://gitlab.com/calions/mf-maestro/blob/master/test/src/pages/Home.js]
+    MainPage.js <= here you can find the routing for example [see demo file](https://gitlab.com/calions/mf-maestro/blob/master/test/src/pages/MainPage.js)
+    Page1.js <= here you have a real page with content [see demo file](https://gitlab.com/calions/mf-maestro/blob/master/test/src/pages/Home.js)
     ...
 ```
 
 You have comments in the demo files so you can understand how you build an app.
+
+### options and params sent to start() function of your microfrontend
+
+1. microAppId
+
+ This is the id of the html node where you can find the "app-wrapper" of your app. You should not need it most of the time.
+
+2. params
+
+ This is a simple object with params for your app. ```params``` is a prop of your react component. You can view a demo [here](https://gitlab.com/calions/mf-maestro/blob/master/test/src/pages/Home.js#L15)
+
+3. options
+
+ ```options``` is an object with these attributes:
+ * ```appNode```
+
+  the dom node where your app put its content. Use it like a normal dom node, nothing special. You can view how to use it [here](https://gitlab.com/calions/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js#L13)
+
+ * ```events```
+
+  an object with [already binded functions](https://gitlab.com/calions/mf-maestro/blob/master/src/effects/useEvents.js#L24) to use events. IMPORTANT : always use these functions to add/remove events, because it will automatically manage events listeners, removing listeners when your app is removed from the dom. Not using these functions can lead to memory leak (your components will be removed from the dom, but will stay in memory because of a reference to a listener). You can view a demo [here](https://gitlab.com/calions/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js) with ```emit``` and ```on```
+
+ * ```navigation```
+
+  an object to [block/unblock](https://gitlab.com/calions/mf-maestro/blob/master/src/navigation.js) navigation between page transition. Usefull for example if you want to show a modal to your user before he leaves the current page. [demo](https://gitlab.com/calions/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L20)
+
+ * ```queryParams```
+
+  an object with query params you send to your component from url. The format is [json5](https://json5.org/). This is usefull if you ant to intialize components on your page, for example to load a specific resource, or go to a specific page in your component. Since the architecture of MfMaestro is based on pages where you aggregate your components, you can have only one component on your page or multiple components. So if you want to initialize each of them, you can't do it with 1 url. That's why we choosed to use query params for this task.
+
+  How to use query params
+
+  What we want to do is to build an url ```https://mydomain.com/users?microApp1Ref={var1:12,var2:"var2value",...}&microApp2Ref={var1:"hello", var3:"world",...}``` and be able to catch these values in microApp1 and microApp2 start functions.
+  To let the mediator connect your json5 to a microapp on the page, you need to add a ```groupRef``` prop to your react MicroAppComponent component ([demo](https://gitlab.com/calions/mf-maestro/blob/master/test/src/pages/Home.js)), and then use this groupRef as the key of your json5 value in your query string: ```...myUrl?home1={my json5 object}```

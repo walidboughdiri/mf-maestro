@@ -20,14 +20,11 @@
       consoleNode.setAttribute("events-count", eventsCount + 1);
     });
   }
-  function startMicroApp1(microAppId, params, { events, navigation }) {
-    const node = document
-      .getElementById(microAppId)
-      .querySelector(`[data-id="app-wrapper"]`);
-    node.innerHTML = `<div data-id="app">
+  function startMicroApp1(microAppId, params, { appNode, events, navigation }) {
+    appNode.innerHTML = `<div data-id="app">
     <p data-id="title">microApp3@${microAppId}</p>
     <div data-id="console" once-event="0" events-count="0"></div>
   </div>`;
-    startEventsListeners(events, node.querySelector("[data-id='console']"));
+    startEventsListeners(events, appNode.querySelector("[data-id='console']"));
   }
 })();

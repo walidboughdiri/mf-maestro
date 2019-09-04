@@ -9,16 +9,13 @@
     },
   });
 
-  function startMicroApp1(microAppId, params, { events, navigation }) {
-    const node = document
-      .getElementById(microAppId)
-      .querySelector(`[data-id="app-wrapper"]`);
-    node.innerHTML = `<div data-id="app">
+  function startMicroApp1(microAppId, params, { appNode, events, navigation }) {
+    appNode.innerHTML = `<div data-id="app">
     <p data-id="title">microApp1@${microAppId}</p>
     <button data-id="b3">emit onceEvent</button>
     <div data-id="console"></div>
   </div>`;
-    node
+    appNode
       .querySelector("[data-id='b3']")
       .addEventListener("click", e => events.emit("ma1:onceEvent"));
   }
