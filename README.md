@@ -4,7 +4,7 @@
 
 # MfMaestro
 
-MfMaestro ([npm link]()) is a frontend [mediator](https://en.wikipedia.org/wiki/Mediator_pattern) to build browser-based applications.    
+MfMaestro ([npm link](https://www.npmjs.com/package/mf-maestro)) is a frontend [mediator](https://en.wikipedia.org/wiki/Mediator_pattern) to build browser-based applications.    
 It works by aggregating at runtime [compatible micro-frontends](#build-hello), served from http servers by independent microservices.  
 One of the most important aspect in MfMaestro is to keep things NOT COUPLED with high cohesion, so each team can release at its own rythm. This was specially important when we designed the event system to synchronize micro-frontends.
 
@@ -92,7 +92,7 @@ When you build your service applications, you should add to your process the aut
 
 ### How to build a microapplication to be compatible with MfMaestro
 
-<a name="build-hello">*</a> The simplest application can be :
+	<a name="build-hello">*</a> The simplest application can be :
 
 ```
   window.MfMaestro.registerMicroApp("micro-app-1", {
@@ -208,11 +208,11 @@ The object returned by this function is also used as a [config for our MediatorA
 
   the dom node where your app put its content. Use it like a normal dom node, nothing special. You can view how to use it [here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js#L13)
 
- * <a name="#options-events">```events```</a>
+ * <a name="options-events">```events```</a>
 
   an object with [already binded functions](https://github.com/calions-app/mf-maestro/blob/master/src/effects/useEvents.js#L24) to use events. IMPORTANT : always use these functions to add/remove events, because it will automatically manage events listeners, removing listeners when your app is removed from the dom. Not using these functions can lead to memory leak (your components will be removed from the dom, but will stay in memory because of a reference to a listener). You can view a demo [here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js) with ```emit``` and ```on```
 
- * <a name="#options-navigation">```navigation```</a>
+ * <a name="options-navigation">```navigation```</a>
 
   an object to [block/unblock](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) navigation between page transition. Usefull for example if you want to show a modal to your user before he leaves the current page. [demo](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L20)
 
@@ -307,3 +307,9 @@ When you call ```options.navigation.unblockNavigation()```, a message is emited 
 
 - add a mechanism to extract the framework from micro-frontend's build and be able to cache an already loaded framework (by version) and give it to a micro-frontend if it needs to. This would reduce micro-frontends sizes, since for now, each one needs to load its own version. This is the main drawback of MfMaestro for now.
 - move tests to [cypress.io](https://www.cypress.io/).
+- fix this doc
+- add list of UI/UX patterns we have been developping
+- explain backend realtime architecture
+- add realtime frontend architecture
+- improve demo to better match real use cases
+- add 
