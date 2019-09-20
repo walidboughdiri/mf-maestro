@@ -198,7 +198,7 @@ The object returned by this function is also used as a [config for our MediatorA
 
 2. params
 
- This is a simple object with params for your app. ```params``` is a prop of your react component. You can view a demo [here](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js#L15)
+ This is a simple object with params for your app. ```params``` is a merge between prop of your react component and url path params defined in the react router. Url params are passed to all micro-frontends, and prop params are unique for each one. You can view a demo [here for params prop](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js#L15) and for path params [router](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/MainPage.js#L29) / [micro-frontend](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L45)
 
 3. options
 
@@ -324,5 +324,4 @@ When you call ```options.navigation.unblockNavigation()```, a message is emited 
 - fix bug : clean events from memory when we replace microfrontends using props (memory leak...)
 - add a demo with web components
 - explain css architecture and how to use it
-- add handling of url params (id and nested variables)
 - in events redirect or navigate explain how dynamic params works (:id)
