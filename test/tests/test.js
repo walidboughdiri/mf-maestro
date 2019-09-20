@@ -21,12 +21,12 @@ test("test components load", async t => {
     .expect(
       Selector("[data-app-ref='micro-app-1@home1'] [data-id='title']").innerText
     )
-    .eql("microApp1@home1");
+    .eql("This is a micro-frontend demo in VanillaJS (microApp1@home1)");
   await t
     .expect(
       Selector("[data-app-ref='micro-app-3@mac3'] [data-id='title']").innerText
     )
-    .eql("microApp3@mac3");
+    .eql("This is a micro-frontend demo in VanillaJS (microApp3@mac3)");
 });
 
 test("test routing", async t => {
