@@ -315,3 +315,5 @@ When you call ```options.navigation.unblockNavigation()```, a message is emited 
 - add groupRefId on events to "scope" events
 - add recommandation for backend architecture to use MfMaestro the most efficient way
 - add recommandation "how to write micro-frontends"
+- explain dynamic replacement of microfrontend using props
+- fix bug : clean events from memory when we replace microfrontends using props (memory leak...)
