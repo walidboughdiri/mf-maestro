@@ -19,6 +19,21 @@ export default function Home() {
         groupRef="mac3"
         manifestUrl="http://localhost:3000/assets/manifest2.json"
       />
+      <MicroAppComponent
+        app="react-app"
+        groupRef="ref-react-app"
+        manifestUrl="http://localhost:3000/assets/manifest.json"
+      />
+      <MicroAppComponent
+        app="hooked-react-app"
+        groupRef="ref-hooked-react-app"
+        manifestUrl="http://localhost:3000/assets/manifest.json"
+      />
+      <MicroAppComponent
+        app="vue-app"
+        groupRef="ref-vue-app"
+        manifestUrl="http://localhost:3000/assets/manifest.json"
+      />
     </div>
   );
 }

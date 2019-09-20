@@ -10,8 +10,8 @@
   });
 
   function startMicroApp1(microAppId, params, { appNode, events, navigation }) {
-    appNode.innerHTML = `<div data-id="app">
-    <p data-id="title">microApp1@${microAppId}</p>
+    appNode.innerHTML = `<div data-id="app" style="background:#ffa7df;padding:20px;width:400px;">
+    <p data-id="title">This is a micro-frontend demo in VanillaJS (microApp1@${microAppId})</p>
     <button data-id="b3">emit onceEvent</button>
     <div data-id="console"></div>
   </div>`;

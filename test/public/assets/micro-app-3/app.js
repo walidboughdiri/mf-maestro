@@ -21,8 +21,8 @@
     });
   }
   function startMicroApp1(microAppId, params, { appNode, events, navigation }) {
-    appNode.innerHTML = `<div data-id="app">
-    <p data-id="title">microApp3@${microAppId}</p>
+    appNode.innerHTML = `<div data-id="app" style="background:#ffd87c;padding:20px;width:400px;">
+    <p data-id="title">This is a micro-frontend demo in VanillaJS (microApp3@${microAppId})</p>
     <div data-id="console" once-event="0" events-count="0"></div>
   </div>`;
     startEventsListeners(events, appNode.querySelector("[data-id='console']"));

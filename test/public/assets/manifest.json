@@ -3,5 +3,17 @@
     "css": "/assets/micro-app-1/app.css",
     "type":"elm",
     "url":"/assets/micro-app-1/app.js"
+  },
+  "react-app": {
+    "type":"elm",
+    "url":"/assets/apps-react-15/app.js"
+  },
+  "hooked-react-app": {
+    "type":"elm",
+    "url":"/assets/apps-react-16-8-hooks/app.js"
+  },
+  "vue-app": {
+    "type":"elm",
+    "url":"/assets/apps-vue/app.js"
   }
 }
