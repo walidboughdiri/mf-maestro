@@ -312,4 +312,6 @@ When you call ```options.navigation.unblockNavigation()```, a message is emited 
 - explain backend realtime architecture
 - add realtime frontend architecture
 - improve demo to better match real use cases
-- add 
+- add groupRefId on events to "scope" events
+- add recommandation for backend architecture to use MfMaestro the most efficient way
+- add recommandation "how to write micro-frontends"
