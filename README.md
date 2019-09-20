@@ -92,7 +92,7 @@ When you build your service applications, you should add to your process the aut
 
 ### How to build a microapplication to be compatible with MfMaestro
 
-[*](#build-hello) The simplest application can be :
+<a name="build-hello">*</a> The simplest application can be :
 
 ```
   window.MfMaestro.registerMicroApp("micro-app-1", {
