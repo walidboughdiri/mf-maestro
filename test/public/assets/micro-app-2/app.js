@@ -42,7 +42,7 @@
     <p data-id="title">This is a micro-frontend demo in VanillaJS (microApp2@${groupRef})</p>
     <button data-id="b1">navigate from ${groupRef}</button>
     <button data-id="b2">send test event</button>
-    <div data-id="console"></div>
+    <div data-id="console">path params : ${JSON.stringify(params)}</div>
   </div>`;
     const button = appNode.querySelector("[data-id='b1']");
     button.addEventListener("click", e => navigate(e, events.emit, navigation));

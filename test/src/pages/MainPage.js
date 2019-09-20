@@ -14,7 +14,7 @@ export default function MainPage(props) {
           </Link>
         </li>
         <li>
-          <Link data-id="about" to="/about">
+          <Link data-id="about" to="/about/12/charlie">
             About
           </Link>
         </li>
@@ -26,7 +26,7 @@ export default function MainPage(props) {
       </ul>
       <hr />
       <Route exact path="/" component={Home} />
-      <Route path="/about" component={About} />
+      <Route path="/about/:id/:name" component={About} />
       <Route path="/topics" component={Topics} />
     </div>
   );

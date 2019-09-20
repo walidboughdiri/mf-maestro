@@ -12,6 +12,7 @@ import {
 import { getMicroAppState } from "./store/states/loadedMicroApps";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
 import useEvents from "./effects/useEvents";
+import { withRouter } from "react-router";
 
 const microAppTypes = {
   elm: NativeMicroApp,
@@ -32,7 +33,7 @@ function getLoadStatus(status) {
   return status;
 }
 
-export default function MicroAppComponent(props) {
+function MicroAppComponent(props) {
   const appRef = useRef(null);
   const manifestUrlRef = useRef(null);
   const [groupRef, scopedEventsFn] = useEvents(props.groupRef);
@@ -133,9 +134,9 @@ export default function MicroAppComponent(props) {
         autostart={props.autostart}
         cssClass={props.cssClass || props.app}
         groupRef={groupRef}
-        queryParams={queryParams}
         microAppState={microAppState}
-        params={props.params}
+        params={{ ...props.params, ...props.match.params }}
+        queryParams={queryParams}
         scopedEventsFn={scopedEventsFn}
       />
     );
@@ -158,3 +159,5 @@ MicroAppComponent.propTypes = {
   queryParser: PropTypes.func,
   serviceName: PropTypes.string,
 };
+
+export default withRouter(MicroAppComponent);
