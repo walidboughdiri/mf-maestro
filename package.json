@@ -47,6 +47,7 @@
     "react-router-dom": "^5.0.1",
     "react-i18next": "^10.11.4"
   },
+  "repository": "github:calions-app/mf-maestro",
   "scripts": {
     "build": "webpack --mode production",
     "build:apps": "cd test/apps/react-15 && webpack && cd ../react-16-8-hooks && webpack && cd ../vue && webpack && cd ../..",
@@ -54,5 +55,5 @@
     "start": "webpack --watch --mode development",
     "test": "npm run build && npm run build:apps && cd test && (npm start &) && testcafe chrome tests/test.js && ps a | grep webpack-dev-server | grep -v grep | awk '{kill -9 $1}'"
   },
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
