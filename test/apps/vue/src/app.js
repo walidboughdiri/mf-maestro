@@ -2,11 +2,11 @@ import Vue from "vue";
 import App from "./App.vue";
 
 window.MfMaestro.registerMicroApp("vue-app", {
-  start: (microAppId, params, options) => {
-    console.log(`%cstarting ${microAppId}`, "color:violet");
-    new Vue({ el: options.appNode, template: "<App/>", components: { App } });
+  start: (appNode, params, options) => {
+    console.log(`%cstarting ${options.groupRef}`, "color:violet");
+    new Vue({ el: appNode, template: "<App/>", components: { App } });
   },
-  stop: microAppId => {
-    console.log(`%cstopping ${microAppId}`, "color:orange");
+  stop: (appNode, options) => {
+    console.log(`%cstopping ${options.groupRef}`, "color:orange");
   },
 });

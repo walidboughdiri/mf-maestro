@@ -1,11 +1,11 @@
 (function() {
   window.MfMaestro.registerMicroApp("micro-app-3", {
-    start: (microAppId, params, options) => {
-      console.log(`%cstarting ${microAppId}`, "color:violet", options);
-      startMicroApp1(microAppId, params, options);
+    start: (appNode, params, options) => {
+      console.log(`%cstarting ${options.groupRef}`, "color:violet", options);
+      startMicroApp1(appNode, params, options);
     },
-    stop: microAppId => {
-      console.log(`%cstopping ${microAppId}`, "color:orange");
+    stop: (appNode, options) => {
+      console.log(`%cstopping ${options.groupRef}`, "color:orange");
     },
   });
 
@@ -20,9 +20,9 @@
       consoleNode.setAttribute("events-count", eventsCount + 1);
     });
   }
-  function startMicroApp1(microAppId, params, { appNode, events, navigation }) {
+  function startMicroApp1(appNode, params, { groupRef, events, navigation }) {
     appNode.innerHTML = `<div data-id="app" style="background:#ffd87c;padding:20px;width:400px;">
-    <p data-id="title">This is a micro-frontend demo in VanillaJS (microApp3@${microAppId})</p>
+    <p data-id="title">This is a micro-frontend demo in VanillaJS (microApp3@${groupRef})</p>
     <div data-id="console" once-event="0" events-count="0"></div>
   </div>`;
     startEventsListeners(events, appNode.querySelector("[data-id='console']"));

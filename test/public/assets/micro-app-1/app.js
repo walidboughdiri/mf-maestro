@@ -1,17 +1,21 @@
 (function() {
   window.MfMaestro.registerMicroApp("micro-app-1", {
-    start: (microAppId, params, options) => {
-      console.log(`%cstarting ${microAppId}`, "color:violet", options);
-      startMicroApp1(microAppId, params, options);
+    start: (appNode, params, options) => {
+      console.log(`%cstarting ${options.groupRef}`, "color:violet", options);
+      startMicroApp1(appNode, params, options);
     },
-    stop: microAppId => {
-      console.log(`%cstopping ${microAppId}`, "color:orange");
+    stop: (appNode, options) => {
+      console.log(`%cstopping ${options.groupRef}`, "color:orange");
     },
   });
 
-  function startMicroApp1(microAppId, params, { appNode, events, navigation }) {
+  function startMicroApp1(
+    appNode,
+    params,
+    { groupRef, events, navigation, queryParams }
+  ) {
     appNode.innerHTML = `<div data-id="app" style="background:#ffa7df;padding:20px;width:400px;">
-    <p data-id="title">This is a micro-frontend demo in VanillaJS (microApp1@${microAppId})</p>
+    <p data-id="title">This is a micro-frontend demo in VanillaJS (microApp1@${groupRef})</p>
     <button data-id="b3">emit onceEvent</button>
     <div data-id="console"></div>
   </div>`;

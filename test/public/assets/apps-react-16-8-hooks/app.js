@@ -99,12 +99,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.MfMaestro.registerMicroApp("hooked-react-app", {
-  start: function start(microAppId, params, options) {
-    console.log("%cstarting ".concat(microAppId), "color:violet");
-    react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Home__WEBPACK_IMPORTED_MODULE_2__["default"], null), options.appNode);
+  start: function start(appNode, params, options) {
+    console.log("%cstarting ".concat(options.groupRef), "color:violet");
+    react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Home__WEBPACK_IMPORTED_MODULE_2__["default"], null), appNode);
   },
-  stop: function stop(microAppId) {
-    console.log("%cstopping ".concat(microAppId), "color:orange");
+  stop: function stop(appNode, options) {
+    console.log("%cstopping ".concat(options.groupRef), "color:orange");
   }
 });
 

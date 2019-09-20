@@ -6,7 +6,7 @@
 
 MfMaestro ([npm link](https://www.npmjs.com/package/mf-maestro)) is a frontend [mediator](https://en.wikipedia.org/wiki/Mediator_pattern) to build browser-based applications.    
 It works by aggregating at runtime [compatible micro-frontends](#build-hello), served from http servers by independent microservices.  
-One of the most important aspect in MfMaestro is to keep things NOT COUPLED with high cohesion, so each team can release at its own rythm. This was specially important when we designed the event system to synchronize micro-frontends.
+One of the most important aspect in MfMaestro is to try to keep things SIMPLE, NOT COUPLED, with high cohesion, so each team can release at its own rythm. This was specially important when we designed the event system to synchronize micro-frontends.
 
 You can think of the main motivation as this :
 
@@ -90,7 +90,7 @@ If you put many times the same micro-frontend on a page (we tried with more than
 
 When you build your service applications, you should add to your process the automatic generation of manifest files.
 
-### How to build a microapplication to be compatible with MfMaestro
+### How to build a micro-frontend application to be compatible with MfMaestro
 
 	<a name="build-hello">*</a> The simplest application can be :
 
@@ -99,10 +99,10 @@ When you build your service applications, you should add to your process the aut
     start: (targetAppNode, params, options) => {
       // we'll detail params and options later,
       //they are just here so you know there are usefull things send to the start function :)
-      console.log(`starting ${options.microAppId}`);
+      console.log(`starting ${options.groupRef}`);
     },
-    stop: (targetAppNode, microAppId) => {
-      console.log(`stopping ${options.microAppId}`);
+    stop: (targetAppNode, options) => {
+      console.log(`stopping ${options.groupeRef}`);
     },
   });
 ```
@@ -111,7 +111,7 @@ This code could go in the ```app.9876.js``` file for example.
 
 To be usable by MfMaestro, your micro-frontend code always start by calling the ```window.MfMaestro.registerMicroApp``` function with the name of your app (the same name used in the manifest key) and a { start, stop } object as arguments.  
 The ```start```method is called when MfMaestro mounts the MicroAppComponent component, and ```stop``` when it unmounts.  
-Usually you put in ```start``` function the code to start your [Elm]()/[React]()/[Vue]()/[Angular]()/[EmberJS]()/[VanillaJS]()... application, add events listening and reactions, navigation rules to use modals for example, etc etc... (But you can do it deeper in your micro-frontend's code).
+Usually you put in ```start``` function the code to start your [Elm]()/[React]()/[Vue]()/[Angular]()/[EmberJS]()/[VanillaJS]()... application, add events listening and reactions, navigation rules to use modals for example, etc etc... But you can do it deeper in your micro-frontend's code. For example, put here common app's behaviours, and add on each page its events to prevent headache in events and navigation handling in one place for the whole app!!!!.
 In ```stop``` function, you will usually pay attention to be sure you don't have memory leak when you unmount you micro-frontend, like when you attached an event listener and forget to remove it (But for this specific case, MfMaestro automatically gives you, in the ```options``` argument of the start function, a method to automatically manage events, so you don't have to, see bellow). You have multiple articles on internet about how to create and detect memory leaks in javascript in the browser :
 
 * [https://auth0.com/blog/four-types-of-leaks-in-your-javascript-code-and-how-to-get-rid-of-them/](https://auth0.com/blog/four-types-of-leaks-in-your-javascript-code-and-how-to-get-rid-of-them/)
@@ -192,9 +192,9 @@ The object returned by this function is also used as a [config for our MediatorA
 
 ### Options and params sent [to start() function](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js) of your micro-frontend
 
-1. microAppId
+1. appNode
 
- This is the id of the html node where you can find the "app-wrapper" node of your app (the node where your app is injected). You should not need it most of the time. It is node the node where your app starts, but [its parent](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js)
+  the dom node where your app put its content. Use it like a normal dom node, nothing special. You can view how to use it [here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js#L13)
 
 2. params
 
@@ -204,9 +204,9 @@ The object returned by this function is also used as a [config for our MediatorA
 
  ```options``` is an object with these attributes :
  
- * ```appNode```
+ * ```groupRef```
 
-  the dom node where your app put its content. Use it like a normal dom node, nothing special. You can view how to use it [here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js#L13)
+ This is the id of the html node where you can find the "app-wrapper" node of your app (the node where your app is injected). You should not need it most of the time. It is not the node where your app starts, but [its parent](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js)
 
  * <a name="options-events">```events```</a>
 
@@ -219,6 +219,11 @@ The object returned by this function is also used as a [config for our MediatorA
  * ```queryParams```
 
   an object with query params you send to your component from url. The format is [json5](https://json5.org/). This is usefull if you want to intialize components on your page, for example to load a specific resource, or go to a specific page in your component. Since the architecture of MfMaestro is based on pages where you aggregate your components, you can have **one OR many** components on your page. So if you want to initialize each of them, you can't do it with the url. That's why we choosed to use query params for this requirement.
+
+### Options and params sent [to stop() function](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js) of your micro-frontend
+
+```stop```receive the ```appNode```and an options object with ```groupRef``` and ```events```.  
+They are (and work the same) the same arguments sent to ```start()``` function.
 
 ### How to use query params
 
@@ -317,3 +322,7 @@ When you call ```options.navigation.unblockNavigation()```, a message is emited 
 - add recommandation "how to write micro-frontends"
 - explain dynamic replacement of microfrontend using props
 - fix bug : clean events from memory when we replace microfrontends using props (memory leak...)
+- add a demo with web components
+- explain css architecture and how to use it
+- add handling of url params (id and nested variables)
+- in events redirect or navigate explain how dynamic params works (:id)

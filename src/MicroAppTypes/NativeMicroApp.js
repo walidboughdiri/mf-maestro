@@ -7,15 +7,18 @@ export default React.memo(NativeMicroApp);
 function NativeMicroApp(props) {
   const appNode = useRef(null);
   useEffect(() => {
-    props.microAppState.start(props.groupRef, props.params, {
-      appNode: appNode.current,
+    props.microAppState.start(appNode.current, props.params, {
+      groupRef: props.groupRef,
       events: props.scopedEventsFn,
       navigation,
       queryParams: props.queryParams,
     });
 
     return () => {
-      props.microAppState.stop(props.groupRef);
+      props.microAppState.stop(appNode.current, {
+        groupRef: props.groupRef,
+        events: props.scopedEventsFn,
+      });
     };
   }, []);
   return (
