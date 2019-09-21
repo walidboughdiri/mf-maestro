@@ -1,11 +1,10 @@
-import { navigation } from "mf-maestro";
 import DemoMicroAppLoadingComponent from "./components/DemoMicroAppLoadingComponent";
 
-export default function init({ mutateEvent, on, once, redirectOnEvent }) {
-  mutateEvent("ma1:onceEvent", "ma3:onceEvent");
-  redirectOnEvent("microApp2:navigationBlocked", "/", {
-    emitBefore: "emitBeforeEvent",
-    emitAfter: "emitAfterEvent",
+export default function init({ mutateEvent, redirectOnEvent }) {
+  mutateEvent("ma1:onceEvent", "init:ma1:onceEvent");
+  redirectOnEvent("redirect:home", "/", {
+    emitBefore: "redirect:home:emitBeforeEvent",
+    emitAfter: "redirect:home:emitAfterEvent",
   });
 
   return {

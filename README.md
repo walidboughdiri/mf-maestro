@@ -208,11 +208,11 @@ The object returned by this function is also used as a [config for our MediatorA
 
  This is the id of the html node where you can find the "app-wrapper" node of your app (the node where your app is injected). You should not need it most of the time. It is not the node where your app starts, but [its parent](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js)
 
- * <a name="options-events">```events```</a>
+ * ```events```<a name="options-events">&nbsp;</a>
 
   an object with [already binded functions](https://github.com/calions-app/mf-maestro/blob/master/src/effects/useEvents.js#L24) to use events. IMPORTANT : always use these functions to add/remove events, because it will automatically manage events listeners, removing listeners when your app is removed from the dom. Not using these functions can lead to memory leak (your components will be removed from the dom, but will stay in memory because of a reference to a listener). You can view a demo [here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js) with ```emit``` and ```on```
 
- * <a name="options-navigation">```navigation```</a>
+ * ```navigation```<a name="options-navigation">&nbsp;</a>
 
   an object to [block/unblock](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) navigation between page transition. Usefull for example if you want to show a modal to your user before he leaves the current page. [demo](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L20)
 
@@ -227,7 +227,7 @@ They are (and work the same) the same arguments sent to ```start()``` function.
 
 ### How to use query params
 
-  We build pages, with many components on each one. To send paramters to each one, we need a url like
+  We build pages, with many components on each one. To send parameters to each one, we need a url like
 
   ```https://mydomain.com/users?microApp1Ref={var1:12,var2:"var2value",...}&microApp2Ref={var1:"hello", var3:"world",...}```
 
@@ -235,12 +235,12 @@ They are (and work the same) the same arguments sent to ```start()``` function.
 
   To let the mediator connect your url's json5 to a micro-frontend on the page, you need to add a ```groupRef``` prop to your react MicroAppComponent component ([demo](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js)), and use this groupRef as the key of your json5 value in your query string (```home1``` here): ```...myUrl?home1={my json5 object}```
   
-### The events system in MfMaestro
+### The events system in MfMaestro<a name="section-events-system">&nbps;</a>
 
 How do you synchronize micro-frontends on a page, so they can react to what is happening into the application, while you want to be able to put the same micro-frontend on different pages with different micro-frontends each time ? Use the mediator, Luke!
 
-Your micro-frontends react to events. It's their "api".
-When you document a micro-frontend, you give the manifest file, but also the list of events it emits or can react to.
+Your micro-frontends react to events. It's their "api".  
+When you document a micro-frontend, you give the manifest file, but also the list of events it emits or can react to.  
 But! Since you don't know on which page and with which other micro-frontends it will be aggregated, how can you react to events emitted by others micro-frontends ? Well, in MfMaestro we have [our events list of functions](https://github.com/calions-app/mf-maestro/blob/master/src/effects/useEvents.js) passed to the ```start``` function of your micro-frontend in the [```options.events```](#options-events) parameter :
 
 - **emit(event, ...args)**
@@ -299,7 +299,7 @@ remove a listener. It takes these arguments :
 
 We use [eventemitter3](https://github.com/primus/eventemitter3) to manage events. If you want to know more about function params, see the doc [on github](https://github.com/primus/eventemitter3) and the api of [node event emitter](https://nodejs.org/api/events.html).
 
-### The navigation system in MfMaestro
+### The navigation system in MfMaestro<a name="#section-navigation">&nbsp;</a>
 
 In the options passed to the ```start```function, you have [```options.navigation```](#options-navigation). You find in this object [2 functions](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) you can call when you need to block or authorize navigation. This can be usefull for example, if you need to show a modal to the user for validation before leaving a page.
 
@@ -307,6 +307,19 @@ To block a navigation, just call ```options.navigation.blockNavigation()```. For
 You can view a [demo here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L20)
 
 When you call ```options.navigation.unblockNavigation()```, a message is emited : ```emit("navigation:location:changed", { location: state.targetLocation });```. You can listen to this message if you need to react to it.
+
+### The ```useEvents``` effect<a name="#section-useEvents">&nbsp;</a>
+
+The useEvents effect is a react effect we use everywhere we need the events system.
+We use it:
+- in the [MediatorApp](https://github.com/calions-app/mf-maestro/blob/master/src/MediatorApp.js) to call the ```init()``` function with main app events.
+- in the [MicroAppComponent](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppComponent.js) to be able to call ```start()``` and ```stop()``` with [```options.events```](#options-events) argument.
+- in pages, when we want to activate/deactivate events or navigation only when we are on a specific page. This allows to not have the whole events config in the init function. You can look at [some demo pages](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js).
+
+To use it, just ```import { useEvents } from "mf-maestro";``` and then initialize it with ```const [groupRef, events] = useEvents("NameOfThisGroupRef");```.
+When you call ```useEvents()```, the argument is an optional string (if you don't pass anyting, a uuid is generated by default). This string is used to manage the effect and its state with redux.
+It returns an array, where the first element is the string itself, and the second element is the events object with all functions you need to [manage events](#section-events-system) binded so that the effect can when you unload the component remove all listeners so that you don't have to worry.
+When you define a ```groupRef``` prop to ```MicroAppComponent```, it is used as ```useEvents()``` argument.
 
 ## TODO
 

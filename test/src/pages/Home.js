@@ -1,10 +1,12 @@
 import React from "react";
+import { useEvents } from "mf-maestro";
 import { useTranslation } from "react-i18next";
 import { MicroAppComponent } from "mf-maestro";
 
 export default function Home() {
+  const [pageRef, events] = useEvents("Home");
+  events.mutateEvent("ma1:onceEvent", "ma3:onceEvent");
   const { t } = useTranslation();
-  const options = { var1: 1 };
   return (
     <div>
       <h2>{t("home")}</h2>
