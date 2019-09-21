@@ -111,7 +111,7 @@ This code could go in the ```app.9876.js``` file for example.
 
 To be usable by MfMaestro, your micro-frontend code always start by calling the ```window.MfMaestro.registerMicroApp``` function with the name of your app (the same name used in the manifest key) and a { start, stop } object as arguments.  
 The ```start```method is called when MfMaestro mounts the MicroAppComponent component, and ```stop``` when it unmounts.  
-Usually you put in ```start``` function the code to start your [Elm]()/[React]()/[Vue]()/[Angular]()/[EmberJS]()/[VanillaJS]()... application, add events listening and reactions, navigation rules to use modals for example, etc etc... But you can do it deeper in your micro-frontend's code. For example, put here common app's behaviours, and add on each page its events to prevent headache in events and navigation handling in one place for the whole app!!!!.
+Usually you put in ```start``` function the code to start your [Elm]()/[React]()/[Vue]()/[Angular]()/[EmberJS]()/[VanillaJS]()... application, add events listening and reactions, navigation rules to use modals for example, etc etc... But you can do it [deeper](#section-useEvents) in your app, pages, or micro-frontend's code. For example, put here common app's behaviours, and add on each page its events to prevent headache in events and navigation handling in one place for the whole app!!!!.
 In ```stop``` function, you will usually pay attention to be sure you don't have memory leak when you unmount you micro-frontend, like when you attached an event listener and forget to remove it (But for this specific case, MfMaestro automatically gives you, in the ```options``` argument of the start function, a method to automatically manage events, so you don't have to, see bellow). You have multiple articles on internet about how to create and detect memory leaks in javascript in the browser :
 
 * [https://auth0.com/blog/four-types-of-leaks-in-your-javascript-code-and-how-to-get-rid-of-them/](https://auth0.com/blog/four-types-of-leaks-in-your-javascript-code-and-how-to-get-rid-of-them/)
@@ -299,7 +299,7 @@ remove a listener. It takes these arguments :
 
 We use [eventemitter3](https://github.com/primus/eventemitter3) to manage events. If you want to know more about function params, see the doc [on github](https://github.com/primus/eventemitter3) and the api of [node event emitter](https://nodejs.org/api/events.html).
 
-### The navigation system in MfMaestro<a name="#section-navigation">&nbsp;</a>
+### The navigation system in MfMaestro<a name="section-navigation">&nbsp;</a>
 
 In the options passed to the ```start```function, you have [```options.navigation```](#options-navigation). You find in this object [2 functions](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) you can call when you need to block or authorize navigation. This can be usefull for example, if you need to show a modal to the user for validation before leaving a page.
 
@@ -308,7 +308,7 @@ You can view a [demo here](https://github.com/calions-app/mf-maestro/blob/master
 
 When you call ```options.navigation.unblockNavigation()```, a message is emited : ```emit("navigation:location:changed", { location: state.targetLocation });```. You can listen to this message if you need to react to it.
 
-### The ```useEvents``` effect<a name="#section-useEvents">&nbsp;</a>
+### The ```useEvents``` effect<a name="section-useEvents">&nbsp;</a>
 
 The useEvents effect is a react effect we use everywhere we need the events system.
 We use it:
