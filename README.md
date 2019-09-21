@@ -266,6 +266,11 @@ add a permanent listener for an event. It takes these arguments :
 	             Thus, you should store it in a variable and pass it as parameters.
 	- context (optional) : the context (the "this") if your callback is not binded.
 
+**> Targetting 1 micro-frontend when you have multiple instances of the same micro-frontend on the page :**
+
+When you add a listener to an event, you will add the listener to your event and to a second event named ```groupRef + ":" + event```. This is done automatically. So if your event is called "mf1:users:clicked" in the micro-frontend with a groupRef "MyMf1", you will also add a listener to the event "MyMf1:mf1:users:clicked".  
+This let you react to an event with just a psecific micro-frontend. Imagine you have on the same page two instances of the same micro-frontend. If you want an event emitted by another micro-frontend to trigger an event of these micro-frontends, you can use the [```mutateEvent(sourceEvent, targetEvent)```](#events-system-mutateEvent) function. But if you do so, both micro-frontends will react. If you want to target only one of them, since they both listen to 2 events (one common : "target-event-name" and one not common : "groupRef:target-event-name"), you just need to mutate your event like this : ```mutateEvent("source-event-name", "groupRef:target-event-name")```.
+
 - **once(event, callback, context)**
 
 same as **on(event, callback, context)**, but reacts only one time to events.
@@ -280,7 +285,7 @@ react to an event by changing the url (page). It takes these arguments :
 		- emitBefore : a string, an event emitted before the url's change is done
 		- emitAfter : a string, an event emitted after the url's change is done
 
-- **mutateEvent(sourceEvent, targetEvent, transformArgsFn)**
+- **mutateEvent(sourceEvent, targetEvent, transformArgsFn)**<a name="events-system-mutateEvent"></a>
 
 add an event listener to emit ```targetEvent``` when ```sourceEvent``` is emitted. It takes these arguments :
 
@@ -325,12 +330,10 @@ When you define a ```groupRef``` prop to ```MicroAppComponent```, it is used as 
 
 - add a mechanism to extract the framework from micro-frontend's build and be able to cache an already loaded framework (by version) and give it to a micro-frontend if it needs to. This would reduce micro-frontends sizes, since for now, each one needs to load its own version. This is the main drawback of MfMaestro for now.
 - move tests to [cypress.io](https://www.cypress.io/).
-- fix this doc
 - add list of UI/UX patterns we have been developping
 - explain backend realtime architecture
 - add realtime frontend architecture
 - improve demo to better match real use cases
-- add groupRefId on events to "scope" events
 - add recommandation for backend architecture to use MfMaestro the most efficient way
 - add recommandation "how to write micro-frontends"
 - explain dynamic replacement of microfrontend using props

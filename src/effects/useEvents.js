@@ -32,10 +32,12 @@ export default function useEvents(ref) {
     },
     on: function(event, callback, context) {
       validate(arguments, ["string", "function", "object="]);
+      on(groupRef + ":" + event, callback, groupRef, context);
       return validate(on(event, callback, groupRef, context), EventEmitter);
     },
     once: function(event, callback, context) {
       validate(arguments, ["string", "function", "object="]);
+      once(groupRef + ":" + event, callback, groupRef, context);
       return validate(once(event, callback, groupRef, context), EventEmitter);
     },
     redirectOnEvent: function(event, path, options) {
@@ -44,6 +46,7 @@ export default function useEvents(ref) {
     },
     removeListener: function(event, callback, context) {
       validate(arguments, ["string", "function", "object="]);
+      removeListener(groupRef + ":" + event, callback, groupRef, context);
       return validate(
         removeListener(event, callback, groupRef, context),
         EventEmitter
