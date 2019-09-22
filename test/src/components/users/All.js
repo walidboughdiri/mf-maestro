@@ -6,7 +6,7 @@ export default function UsersIndex(props) {
   const [[manifestUrl, app], setApp] = useState([null, null]);
   useEffect(() => {
     events.on("users:microApp2", () => {
-      console.log('Event received in UsersIndex : "users:microApp2"');
+      console.log("Event received in UsersIndex : 'users:microApp2'");
     });
     events.on("users:change", (url, app) => {
       setApp([url, app]);
