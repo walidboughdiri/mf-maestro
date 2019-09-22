@@ -24,7 +24,7 @@ export default function useEvents(ref) {
   const scopedEventsFn = {
     emit: function(event, ...args) {
       validate(event, "string");
-      return validate(emit(event, groupRef, ...args), "boolean");
+      return validate(emit(event, ...args, groupRef), "boolean");
     },
     mutateEvent: function(sourceEvent, targetEvent, transformArgsFn) {
       validate(arguments, ["string", "string", "function="]);
