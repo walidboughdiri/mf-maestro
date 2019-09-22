@@ -251,6 +251,7 @@ emit an event in the system. It accepts these arguments :
 	- ...args : has many args as you want.
 	            They will be passed to the listeners "as is".
 	            It's like a payload for your events.
+	            MfMaestro automatically adds the groupRef as last arg sent to callbacks.
 
 You can view some examples [in the micro app 2 demo code](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js).
 
@@ -281,6 +282,11 @@ react to an event by changing the url (page). It takes these arguments :
 
 	- event : a string, the name of the event you want to react to.
 	- path : the new url you want to redirect to.
+            You can use variables in path using ":" like this: ```/users/:id```.
+            When you emit your message, the args will replace the variables.
+            if you add ```redirectOnEvent("myEvent", "/users/:id/articles/:slug")```,
+            and later call ```emit(event, 12, "my-article-1, ...)```,
+            the url will change to ```/users/12/articles/my-article-1```.
 	- options (optional) : an object with these attributes
 		- emitBefore : a string, an event emitted before the url's change is done
 		- emitAfter : a string, an event emitted after the url's change is done
@@ -355,4 +361,3 @@ A micro-frontend only gets its data from its backend. The only data you can pass
 - fix bug : clean events from memory when we replace microfrontends using props (memory leak...)
 - add a demo with web components
 - explain css architecture and how to use it
-- in events redirect or navigate explain how dynamic params works (:id)
