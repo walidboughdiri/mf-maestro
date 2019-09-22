@@ -89,5 +89,5 @@ test("test blocked navigation", async t => {
   await t.click(button);
   await t
     .expect(ClientFunction(() => window.location.href)())
-    .eql("http://localhost:3000/");
+    .eql("http://localhost:3000/?from=about");
 });

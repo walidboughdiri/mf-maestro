@@ -4,7 +4,7 @@ import UsersIndex from "../components/users/All";
 
 export default function About() {
   const [pageRef, events] = useEvents("About");
-  events.redirectOnEvent("microApp2:navigationBlocked", "/");
+  events.redirectOnEvent("microApp2:navigationBlocked", "/?from=:from");
 
   return (
     <div data-id="about-page">

@@ -8,7 +8,7 @@ import { emit } from "./events";
 
 export function blockNavigation() {
   const unblockFn = browserHistory.block(location => {
-    const targetLocation = location && location.pathname;
+    const targetLocation = location && location.pathname + location.search;
     storeBlockedNavigation(targetLocation, unblockFn);
     emit("navigation:location:will-change", { targetLocation });
     //block navigation : https://github.com/ReactTraining/history/blob/master/modules/createBrowserHistory.js

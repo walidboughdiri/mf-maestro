@@ -30,7 +30,7 @@
     navigation.blockNavigation();
     e.target.innerHTML = "locked nav > click to unlock";
     e.target.setAttribute("blocked", true);
-    emit("microApp2:navigationBlocked", 10, 11);
+    emit("microApp2:navigationBlocked", "about");
   }
 
   function start(
