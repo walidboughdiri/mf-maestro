@@ -243,22 +243,18 @@ Your micro-frontends react to events. It's their "api".
 When you document a micro-frontend, you give the manifest file, but also the list of events it emits or can react to.  
 But! Since you don't know on which page and with which other micro-frontends it will be aggregated, how can you react to events emitted by others micro-frontends ? Well, in MfMaestro we have [our events list of functions](https://github.com/calions-app/mf-maestro/blob/master/src/effects/useEvents.js) passed to the ```start``` function of your micro-frontend in the [```options.events```](#options-events) parameter :
 
-- **emit(event, ...args)**
-
+- **emit(event, ...args)**  
 emit an event in the system. It accepts these arguments :
-
 	- event : a string, the name of your event.
-	- ...args : has many args as you want.
-	            They will be passed to the listeners "as is".
-	            It's like a payload for your events.
+	- ...args : has many args as you want.  
+	            They will be passed to the listeners "as is".  
+	            It's like a payload for your events.  
 	            MfMaestro automatically adds the groupRef as last arg sent to callbacks.
 
 You can view some examples [in the micro app 2 demo code](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js).
 
-- **on(event, callback, context)**
-
+- **on(event, callback, context)**  
 add a permanent listener for an event. It takes these arguments :
-
 	- event : a string, the name of the event you want to react to.
 	- callback : a function called when the event is received,
 	             with all args (those passed to the emit function) as parameters.
@@ -272,14 +268,11 @@ add a permanent listener for an event. It takes these arguments :
 When you add a listener to an event, you will add the listener to your event and to a second event named ```groupRef + ":" + event```. This is done automatically. So if your event is called "mf1:users:clicked" in the micro-frontend with a groupRef "MyMf1", you will also add a listener to the event "MyMf1:mf1:users:clicked".  
 This let you react to an event with just a psecific micro-frontend. Imagine you have on the same page two instances of the same micro-frontend. If you want an event emitted by another micro-frontend to trigger an event of these micro-frontends, you can use the [```mutateEvent(sourceEvent, targetEvent)```](#events-system-mutateEvent) function. But if you do so, both micro-frontends will react. If you want to target only one of them, since they both listen to 2 events (one common : "target-event-name" and one not common : "groupRef:target-event-name"), you just need to mutate your event like this : ```mutateEvent("source-event-name", "groupRef:target-event-name")```.
 
-- **once(event, callback, context)**
-
+- **once(event, callback, context)**  
 same as **on(event, callback, context)**, but reacts only one time to events.
 
-- **redirectOnEvent(event, path, options)**
-
+- **redirectOnEvent(event, path, options)**  
 react to an event by changing the url (page). It takes these arguments :
-
 	- event : a string, the name of the event you want to react to.
 	- path : the new url you want to redirect to.
             You can use variables in path using ":" like this: ```/users/:id```.
@@ -291,19 +284,14 @@ react to an event by changing the url (page). It takes these arguments :
 		- emitBefore : a string, an event emitted before the url's change is done
 		- emitAfter : a string, an event emitted after the url's change is done
 
-- **mutateEvent(sourceEvent, targetEvent, transformArgsFn)**<a name="events-system-mutateEvent"></a>
-
+- **mutateEvent(sourceEvent, targetEvent, transformArgsFn)**<a name="events-system-mutateEvent"></a>  
 add an event listener to emit ```targetEvent``` when ```sourceEvent``` is emitted. It takes these arguments :
+   - sourceEvent : a string, the name of the event you want to react to
+	- targetEvent : a string (the name of the event to emit) or a function that will receive all args and return the name of the target event (usefull when you want to [dynamically determine targetEvent](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Topics.Js#L8))
+	- transformArgsFn (optional) : a function that will received all "...args" passed to emit() to transform them if necessary
 
-	- sourceEvent : a string, the name of the event you want to react to
-	- targetEvent : a string, the name of the event to emit
-	- transformArgsFn (optional) : a function that will received all "...args"
-	                               passed to emit() to transform them if necessary
-
-- **removeListener(event, callback, context)**
-
+- **removeListener(event, callback, context)**  
 remove a listener. It takes these arguments :
-
 	- event : a string, the name of the event from which you want to remove the listener
 	- callback : the listener you added earlier (callback reference)
 	- context : a context if needed
