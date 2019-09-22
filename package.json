@@ -55,5 +55,5 @@
     "start": "webpack --watch --mode development",
     "test": "npm run build && npm run build:apps && cd test && (npm start &) && testcafe chrome:headless tests/test.js && ps a | grep webpack-dev-server | grep -v grep | awk '{kill -9 $1}'"
   },
-  "version": "1.1.0"
+  "version": "1.2.0"
 }
