@@ -358,6 +358,5 @@ A micro-frontend only gets its data from its backend. The only data you can pass
 - add recommandation for backend architecture to use MfMaestro the most efficient way
 - add recommandation "how to write micro-frontends"
 - explain dynamic replacement of microfrontend using props
-- fix bug : clean events from memory when we replace microfrontends using props (memory leak...)
 - add a demo with web components
 - explain css architecture and how to use it
