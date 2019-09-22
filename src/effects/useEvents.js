@@ -33,7 +33,7 @@ export default function useEvents(ref) {
       return validate(emit(event, ...args, groupRef), "boolean");
     },
     mutateEvent: function(sourceEvent, targetEvent, transformArgsFn) {
-      validate(arguments, ["string", "string", "function="]);
+      validate(arguments, ["string", "string|function", "function="]);
       return mutateEvent(sourceEvent, targetEvent, transformArgsFn, onFn);
     },
     on: onFn,

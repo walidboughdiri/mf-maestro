@@ -80,7 +80,7 @@ test("test blocked navigation", async t => {
       Selector("[data-app-ref='micro-app-2@usersIndex'] [data-id='console']")
         .innerText
     )
-    .eql('path params : {"id":"12","name":"charlie"}');
+    .eql(`path params : {"id":"12","name":"charlie"}`);
   const button = Selector(
     "[data-app-ref='micro-app-2@usersIndex'] [data-id='b1']"
   );
@@ -90,4 +90,31 @@ test("test blocked navigation", async t => {
   await t
     .expect(ClientFunction(() => window.location.href)())
     .eql("http://localhost:3000/?from=about");
+});
+test("test one to one or many event targets", async t => {
+  await t.click(Selector("[data-id='topics']"));
+  const buttonUser1 = Selector(
+    "[data-app-ref='users-master@users-master1'] [data-id='user-1']"
+  );
+  await t.click(buttonUser1);
+  const console1Node = Selector(
+    "[data-app-ref='users-detail@users-detail1'] [data-id='console']"
+  );
+  await t.expect(console1Node.innerText).eql("loading user User 1");
+  const console2Node = Selector(
+    "[data-app-ref='users-detail@users-detail2'] [data-id='console']"
+  );
+  await t.expect(console2Node.innerText).eql("");
+  const buttonUser2 = Selector(
+    "[data-app-ref='users-master@users-master1'] [data-id='user-2']"
+  );
+  await t.click(buttonUser2);
+  await t.expect(console1Node.innerText).eql("loading user User 1");
+  await t.expect(console2Node.innerText).eql("loading user User 2");
+  const buttonUser3 = Selector(
+    "[data-app-ref='users-master@users-master1'] [data-id='user-3']"
+  );
+  await t.click(buttonUser3);
+  await t.expect(console1Node.innerText).eql("loading user User 3");
+  await t.expect(console2Node.innerText).eql("loading user User 3");
 });

@@ -90,13 +90,15 @@ export function redirectOnEvent(
   });
 }
 export function mutateEvent(sourceEvent, targetEvent, transformArgsFn, onFn) {
-  validate(arguments, ["string", "string", "function=", "function"]);
+  validate(arguments, ["string", "string|function", "function=", "function"]);
   onFn(sourceEvent, (...args) => {
+    const _targetEvent =
+      typeof targetEvent === "string" ? targetEvent : targetEvent(...args);
     if (!args.length) {
-      return emit(targetEvent);
+      return emit(_targetEvent);
     }
     return typeof transformArgsFn === "function"
-      ? emit(targetEvent, ...transformArgsFn(...args))
-      : emit(targetEvent, ...args);
+      ? emit(_targetEvent, ...transformArgsFn(...args))
+      : emit(_targetEvent, ...args);
   });
 }

@@ -15,9 +15,7 @@ import useEvents from "./effects/useEvents";
 import { withRouter } from "react-router";
 import { removeListenersByGroup } from "./events";
 
-const microAppTypes = {
-  elm: NativeMicroApp,
-};
+const microAppTypes = {};
 
 const loadStatuses = [
   "loadingCode",
@@ -48,7 +46,7 @@ function MicroAppComponent(props) {
   const Renderer =
     microAppConfig && microAppConfig.type
       ? microAppTypes[microAppConfig.type]
-      : null;
+      : NativeMicroApp;
 
   const microAppState = getMicroAppState(props.app);
 
