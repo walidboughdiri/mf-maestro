@@ -63,50 +63,40 @@ export function emit(event, ...args) {
 }
 
 export function redirectOnEvent(
-  eventsGroupId,
   message,
   path,
-  { emitBefore, emitAfter } = {}
+  { emitBefore, emitAfter } = {},
+  onFn
 ) {
   validate(arguments, [
     "string",
     "string",
-    "string",
     "Object.<string, string>=",
+    "function",
   ]);
-  on(
-    message,
-    (args = {}) => {
-      if (emitBefore) emit(emitBefore);
-      // We replace parameters in path by args value. Parameters start with `:`
-      const parsedPath = (path.match(/:\w+/g) || []).reduce(
-        (p, arg) => p.replace(arg, args[arg.substr(1)]),
-        path
-      );
-      if (browserHistory.location.pathname === parsedPath) return;
-      browserHistory.push(parsedPath);
-      if (emitAfter) emit(emitAfter);
-    },
-    eventsGroupId
-  );
-}
-export function mutateEvent(
-  eventsGroupId,
-  sourceEvent,
-  targetEvent,
-  transformArgsFn
-) {
-  validate(arguments, ["string", "string", "string", "function="]);
-  on(
-    sourceEvent,
-    (...args) => {
-      if (!args.length) {
-        return emit(targetEvent);
+  onFn(message, (...args) => {
+    if (emitBefore) emit(emitBefore);
+    const parsedPath = (path.match(/:\w+/g) || []).reduce((p, arg, index) => {
+      if (typeof args[index] === "undefined") {
+        console.log(
+          `WARNING: trying to redirectOnEvent (event: "${message}", path: "${path}"), but there is no arg at index ${index} for path params "${arg}". Maybe the emitted message is missing some args ?`
+        );
       }
-      return typeof transformArgsFn === "function"
-        ? emit(targetEvent, ...transformArgsFn(...args))
-        : emit(targetEvent, ...args);
-    },
-    eventsGroupId
-  );
+      return p.replace(arg, args[index]);
+    }, path);
+    if (browserHistory.location.pathname === parsedPath) return;
+    browserHistory.push(parsedPath);
+    if (emitAfter) emit(emitAfter);
+  });
+}
+export function mutateEvent(sourceEvent, targetEvent, transformArgsFn, onFn) {
+  validate(arguments, ["string", "string", "function=", "function"]);
+  onFn(sourceEvent, (...args) => {
+    if (!args.length) {
+      return emit(targetEvent);
+    }
+    return typeof transformArgsFn === "function"
+      ? emit(targetEvent, ...transformArgsFn(...args))
+      : emit(targetEvent, ...args);
+  });
 }

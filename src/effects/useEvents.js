@@ -21,6 +21,12 @@ export default function useEvents(ref) {
     };
   }, []);
 
+  const onFn = function(event, callback, context) {
+    validate(arguments, ["string", "function", "object="]);
+    on(groupRef + ":" + event, callback, groupRef, context);
+    return validate(on(event, callback, groupRef, context), EventEmitter);
+  };
+
   const scopedEventsFn = {
     emit: function(event, ...args) {
       validate(event, "string");
@@ -28,13 +34,9 @@ export default function useEvents(ref) {
     },
     mutateEvent: function(sourceEvent, targetEvent, transformArgsFn) {
       validate(arguments, ["string", "string", "function="]);
-      return mutateEvent(groupRef, sourceEvent, targetEvent, transformArgsFn);
+      return mutateEvent(sourceEvent, targetEvent, transformArgsFn, onFn);
     },
-    on: function(event, callback, context) {
-      validate(arguments, ["string", "function", "object="]);
-      on(groupRef + ":" + event, callback, groupRef, context);
-      return validate(on(event, callback, groupRef, context), EventEmitter);
-    },
+    on: onFn,
     once: function(event, callback, context) {
       validate(arguments, ["string", "function", "object="]);
       once(groupRef + ":" + event, callback, groupRef, context);
@@ -42,7 +44,7 @@ export default function useEvents(ref) {
     },
     redirectOnEvent: function(event, path, options) {
       validate(arguments, ["string", "string", "Object.<string, string>="]);
-      return redirectOnEvent(groupRef, event, path, options);
+      return redirectOnEvent(event, path, options, onFn);
     },
     removeListener: function(event, callback, context) {
       validate(arguments, ["string", "function", "object="]);
