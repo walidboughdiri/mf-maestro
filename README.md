@@ -326,6 +326,21 @@ When you call ```useEvents()```, the argument is an optional string (if you don'
 It returns an array, where the first element is the string itself, and the second element is the events object with all functions you need to [manage events](#section-events-system) binded so that the effect can when you unload the component remove all listeners so that you don't have to worry.
 When you define a ```groupRef``` prop to ```MicroAppComponent```, it is used as ```useEvents()``` argument.
 
+## Our micro-frontends guidelines
+
+- Never share data between micro-frontends
+
+A micro-frontend only gets its data from its backend. The only data you can passed are the one you can find in url (id, query params....).
+
+- A micro-frontend must always have a "loading" or "waiting" state since, sometimes, the data you need to load might not be in your microservice yet.
+
+- At the start of the service, load the current state (http call to backend). We don't use frontend store most of the time. They are complicated to manage. Each time we need to access a data, we make a call to backend.
+
+- if you manage lists, do not refresh automatically. If someone is using the list on page X, the refresh will change everyting. It is better to let the user know a new state is available.
+
+- add a mechanism to let the user know when he's using an outdated version of the micro-frontend, with a way to reload the service.
+
+
 ## TODO
 
 - add a mechanism to extract the framework from micro-frontend's build and be able to cache an already loaded framework (by version) and give it to a micro-frontend if it needs to. This would reduce micro-frontends sizes, since for now, each one needs to load its own version. This is the main drawback of MfMaestro for now.
