@@ -13,6 +13,7 @@ import { getMicroAppState } from "./store/states/loadedMicroApps";
 import NativeMicroApp from "./MicroAppTypes/NativeMicroApp";
 import useEvents from "./effects/useEvents";
 import { withRouter } from "react-router";
+import { removeListenersByGroup } from "./events";
 
 const microAppTypes = {
   elm: NativeMicroApp,
@@ -64,7 +65,6 @@ function MicroAppComponent(props) {
     if (status === loadStatus) return;
     setLoadStatus(status);
   }
-  console.log(`••••rendering ${groupRef}/${props.app} (${loadStatus})`, props);
   if (
     props.app !== appRef.current ||
     props.manifestUrl !== manifestUrlRef.current
@@ -73,8 +73,10 @@ function MicroAppComponent(props) {
       appRef.current &&
       manifestUrlRef.current &&
       loadStatus === getLoadStatus("canStart")
-    )
+    ) {
+      removeListenersByGroup(props.groupRef);
       updateLoadStatus("propsChanged");
+    }
     appRef.current = props.app;
     manifestUrlRef.current = props.manifestUrl;
   }
