@@ -6,7 +6,7 @@ import Topics from "./Topics";
 export default function MainPage(props) {
   return (
     <div>
-      MainPage Content
+      Main Menu
       <ul data-id="menu">
         <li>
           <Link data-id="home" to="/">
@@ -15,12 +15,12 @@ export default function MainPage(props) {
         </li>
         <li>
           <Link data-id="about" to="/about/12/charlie">
-            About
+            Demo dynamic props & navigation
           </Link>
         </li>
         <li>
           <Link data-id="topics" to="/topics">
-            Topics
+            Demo master/detail
           </Link>
         </li>
       </ul>
