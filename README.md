@@ -192,7 +192,7 @@ MyMediatorApp/
   init.js (4)
   pages/ (5)
     MainPage.js (6)
-    Page1.js <= here you have a real page with content [see demo file](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js)
+    Page1.js
    ...
 ```
 
@@ -214,6 +214,8 @@ The object returned by this function is also used as a [config for our MediatorA
 (5) **```pages```** directory : all app's pages where we put components/micro-frontends.
 
 (6) **```MainPage.js```** : the main page of our app ([see example](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/MainPage.js)) injected in the ```startMediator```function in ```index.js``` file (3). Usually this page would be your main router.  
+
+(7) **```Page1.js```** :  a real page with content [see demo file](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js)
 
 <a name="section-function-start"></a>
 ### Options and params sent [to start() function](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js) of your micro-frontend
@@ -369,6 +371,12 @@ A micro-frontend only gets its data from its backend. The only data you can pass
 - if you manage lists, do not refresh automatically. If someone is using the list on page X, the refresh will change everyting. It is better to let the user know a new state is available.
 
 - add a mechanism to let the user know when he's using an outdated version of the micro-frontend, with a way to reload the service.
+
+<a name="chapter-tips-tricks"></a>
+## Tips & tricks
+
+- When you add a new page, do not forget it receives as props an object with history, location and match properties. This let you handle complex navigation cases if you need to dig deeper.
+
 
 <a name="chapter-todo"></a>
 ## TODO
