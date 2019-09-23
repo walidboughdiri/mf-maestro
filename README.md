@@ -5,7 +5,7 @@
 # MfMaestro
 
 MfMaestro ([npm link](https://www.npmjs.com/package/mf-maestro)) is a frontend [mediator](https://en.wikipedia.org/wiki/Mediator_pattern) to build browser-based applications.    
-It works by aggregating at runtime [compatible micro-frontends](#build-hello), served from http servers by independent microservices.  
+It works by aggregating at runtime [compatible micro-frontends](#section-how-to-build), served from http servers by independent microservices.  
 One of the most important aspect in MfMaestro is to try to keep things SIMPLE, NOT COUPLED, with high cohesion, so each team can release at its own rythm. This was specially important when we designed the event system to synchronize micro-frontends.
 
 You can think of the main motivation as this :
@@ -21,6 +21,25 @@ It's a kind of pattern/DSL/framework (you can stay "high", almost only declarati
 5. Start your app. Your page should load and micro-frontends will load from their urls and start.
 6. Now you can go deeper : improve your app with events, routing, navigation, create more complex MicroAppComponent component to handle specific logic... everything that allows you to build a real and more complex app than a simple "hello micro-frontend".
 
+## Documentation sections
+
+* [Repository organization](#chapter-repository)
+* [Installation](#chapter-installation)
+* [Demo](#chapter-demo)
+* [Tests](#chapter-test)
+* [How to use MfMaestro](#chapter-how-to-use)
+	* [How to build a micro-frontend application to be compatible with MfMaestro](#section-how-to-build)
+	* [How do we use our micro applications with MfMaestro main app](#section-app-architecture)
+	* [Options and params sent to ```start()``` function of your micro-frontend](#section-function-start)
+	* [Options and params sent to ```stop()``` function of your micro-frontend](#section-function-stop)
+	* [How to use query params](#section-queryParams)
+	* [The events system in MfMaestro](#section-events-system)
+	* [The navigation system in MfMaestro](#section-navigation)
+	* [The ```useEvents``` effect](#section-useEvents)
+* [Our micro-frontends guidelines](#chapter-front-guidelines)
+* [TODO](#chapter-todo)
+
+<a name="chapter-repository"></a>
 ## Repository organization
 
  - in ```src``` you find the Mediator source code.
@@ -31,6 +50,7 @@ It's a kind of pattern/DSL/framework (you can stay "high", almost only declarati
  		- the ```index.html``` is the page loaded when the webpack dev server start
  		- in ```test/public/assets```, you find the different micro-frontends (js and css) we load in the demo while navigating and emitting events. This is also the target directory for ```test/apps``` builds.
 
+<a name="chapter-installation"></a>
 ## Installation
 
 To add MfMaestro to your project, go to your project directory and add the npm package:
@@ -39,6 +59,7 @@ To add MfMaestro to your project, go to your project directory and add the npm p
 npm install mf-maestro --save
 ```
 
+<a name="chapter-demo"></a>
 ## Demo
 
 A demo application (also used for integration tests) is availabe in [the```test```directory](https://github.com/calions-app/mf-maestro/tree/master/test)
@@ -52,12 +73,14 @@ To start the demo :
 3. Go to mf-maestro root and run : ```npm run demo```
 4. Go to https://localhost:3000/
 
+<a name="chapter-test"></a>
 ## Tests
 
 Tests are run using the demo app, with [TestCafe](https://devexpress.github.io/testcafe/). Setup npm links like you would do to run the demo if it is not yet already done.  
 Then go to ```mf-maestro/``` root directory and run : ```npm run test```
 By default, tests are run with chrome headless, but you can use all [TestCafe](https://devexpress.github.io/testcafe/) functionnalities.
 
+<a name="chapter-how-to-use"></a>
 ## How to use MfMaestro
 
 As explained in the intro, when we designed MfMaestro, we wanted to build applications by aggregating micro-frontends on pages. This allows to build new online applications efficiently. A team exposes its micro-frontends with a manifest file, available at a url like https://service1.mydomain.com/mf_maestro.json, with this structure :
@@ -90,9 +113,10 @@ If you put many times the same micro-frontend on a page (we tried with more than
 
 When you build your service applications, you should add to your process the automatic generation of manifest files.
 
+<a name="section-how-to-build"></a>
 ### How to build a micro-frontend application to be compatible with MfMaestro
 
-	<a name="build-hello">*</a> The simplest application can be :
+The simplest application can be :
 
 ```
   window.MfMaestro.registerMicroApp("micro-app-1", {
@@ -148,6 +172,7 @@ serviceN:
   micro-app-N-M.css (https://serviceN.mydomain.com/assests/js/micro-app-N-M.js)
 ```
 
+<a name="section-app-architecture"></a>
 ### How do we use our micro applications with MfMaestro main app
 
 To load and use micro-frontends, we need to design a main app, where you define your pages, the routing and events.
@@ -190,6 +215,7 @@ The object returned by this function is also used as a [config for our MediatorA
 
 (6) **```MainPage.js```** : the main page of our app ([see example](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/MainPage.js)) injected in the ```startMediator```function in ```index.js``` file (3). Usually this page would be your main router.  
 
+<a name="section-function-start"></a>
 ### Options and params sent [to start() function](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js) of your micro-frontend
 
 1. appNode
@@ -203,28 +229,34 @@ The object returned by this function is also used as a [config for our MediatorA
 3. options
 
  ```options``` is an object with these attributes :
+ <a name="options-groupRef"></a>
  
  * ```groupRef```
 
  This is the id of the html node where you can find the "app-wrapper" node of your app (the node where your app is injected). You should not need it most of the time. It is not the node where your app starts, but [its parent](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js)
-
- * ```events```<a name="options-events">&nbsp;</a>
+ <a name="options-events"></a>
+ 
+ * ```events```
 
   an object with [already binded functions](https://github.com/calions-app/mf-maestro/blob/master/src/effects/useEvents.js#L24) to use events. IMPORTANT : always use these functions to add/remove events, because it will automatically manage events listeners, removing listeners when your app is removed from the dom. Not using these functions can lead to memory leak (your components will be removed from the dom, but will stay in memory because of a reference to a listener). You can view a demo [here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js) with ```emit``` and ```on```
+<a name="options-navigation"></a>
 
- * ```navigation```<a name="options-navigation">&nbsp;</a>
+ * ```navigation```
 
   an object to [block/unblock](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) navigation between page transition. Usefull for example if you want to show a modal to your user before he leaves the current page. [demo](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L20)
+<a name="options-navigation"></a>
 
  * ```queryParams```
 
   an object with query params you send to your component from url. The format is [json5](https://json5.org/). This is usefull if you want to intialize components on your page, for example to load a specific resource, or go to a specific page in your component. Since the architecture of MfMaestro is based on pages where you aggregate your components, you can have **one OR many** components on your page. So if you want to initialize each of them, you can't do it with the url. That's why we choosed to use query params for this requirement.
 
+<a name="section-function-stop"></a>
 ### Options and params sent [to stop() function](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js) of your micro-frontend
 
 ```stop```receive the ```appNode```and an options object with ```groupRef``` and ```events```.  
 They are (and work the same) the same arguments sent to ```start()``` function.
 
+<a name="section-queryParams"></a>
 ### How to use query params
 
   We build pages, with many components on each one. To send parameters to each one, we need a url like
@@ -234,8 +266,9 @@ They are (and work the same) the same arguments sent to ```start()``` function.
   and be able to send these values in your [micro-frontends ```start``` functions](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js).
 
   To let the mediator connect your url's json5 to a micro-frontend on the page, you need to add a ```groupRef``` prop to your react MicroAppComponent component ([demo](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js)), and use this groupRef as the key of your json5 value in your query string (```home1``` here): ```...myUrl?home1={my json5 object}```
-  
-### The events system in MfMaestro<a name="section-events-system">&nbps;</a>
+
+<a name="section-events-system"></a>
+### The events system in MfMaestro
 
 How do you synchronize micro-frontends on a page, so they can react to what is happening into the application, while you want to be able to put the same micro-frontend on different pages with different micro-frontends each time ? Use the mediator, Luke!
 
@@ -283,8 +316,8 @@ react to an event by changing the url (page). It takes these arguments :
 	- options (optional) : an object with these attributes
 		- emitBefore : a string, an event emitted before the url's change is done
 		- emitAfter : a string, an event emitted after the url's change is done
-
-- **mutateEvent(sourceEvent, targetEvent, transformArgsFn)**<a name="events-system-mutateEvent"></a>  
+<a name="events-system-mutateEvent"></a>
+- **mutateEvent(sourceEvent, targetEvent, transformArgsFn)**  
 add an event listener to emit ```targetEvent``` when ```sourceEvent``` is emitted. It takes these arguments :
    - sourceEvent : a string, the name of the event you want to react to
 	- targetEvent : a string (the name of the event to emit) or a function that will receive all args and return the name of the target event (usefull when you want to [dynamically determine targetEvent](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Topics.Js#L8))
@@ -298,7 +331,8 @@ remove a listener. It takes these arguments :
 
 We use [eventemitter3](https://github.com/primus/eventemitter3) to manage events. If you want to know more about function params, see the doc [on github](https://github.com/primus/eventemitter3) and the api of [node event emitter](https://nodejs.org/api/events.html).
 
-### The navigation system in MfMaestro<a name="section-navigation">&nbsp;</a>
+<a name="section-navigation"></a>
+### The navigation system in MfMaestro
 
 In the options passed to the ```start```function, you have [```options.navigation```](#options-navigation). You find in this object [2 functions](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) you can call when you need to block or authorize navigation. This can be usefull for example, if you need to show a modal to the user for validation before leaving a page.
 
@@ -307,7 +341,8 @@ You can view a [demo here](https://github.com/calions-app/mf-maestro/blob/master
 
 When you call ```options.navigation.unblockNavigation()```, a message is emited : ```emit("navigation:location:changed", { location: state.targetLocation });```. You can listen to this message if you need to react to it.
 
-### The ```useEvents``` effect<a name="section-useEvents">&nbsp;</a>
+<a name="section-useEvents"></a>
+### The ```useEvents``` effect
 
 The useEvents effect is a react effect we use everywhere we need the events system.
 We use it:
@@ -320,6 +355,7 @@ When you call ```useEvents()```, the argument is an optional string (if you don'
 It returns an array, where the first element is the string itself, and the second element is the events object with all functions you need to [manage events](#section-events-system) binded so that the effect can when you unload the component remove all listeners so that you don't have to worry.
 When you define a ```groupRef``` prop to ```MicroAppComponent```, it is used as ```useEvents()``` argument.
 
+<a name="chapter-front-guidelines"></a>
 ## Our micro-frontends guidelines
 
 - Never share data between micro-frontends
@@ -334,7 +370,7 @@ A micro-frontend only gets its data from its backend. The only data you can pass
 
 - add a mechanism to let the user know when he's using an outdated version of the micro-frontend, with a way to reload the service.
 
-
+<a name="chapter-todo"></a>
 ## TODO
 
 - add a mechanism to extract the framework from micro-frontend's build and be able to cache an already loaded framework (by version) and give it to a micro-frontend if it needs to. This would reduce micro-frontends sizes, since for now, each one needs to load its own version. This is the main drawback of MfMaestro for now.
