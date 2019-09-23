@@ -53,7 +53,7 @@
     "build:apps": "cd test/apps/react-15 && webpack && cd ../react-16-8-hooks && webpack && cd ../vue && webpack && cd ../..",
     "demo": "npm run build && npm run build:apps && cd test && npm start",
     "start": "webpack --watch --mode development",
-    "test": "npm run build && npm run build:apps && cd test && (npm start &) && testcafe chrome:headless tests/test.js && ps a | grep webpack-dev-server | grep -v grep | awk '{kill -9 $1}'"
+    "test": "npm run build && npm run build:apps && cd test && (npm start &) && testcafe chrome:headless tests/test.js && kill $(ps aux | grep '[w]ebpack-dev-server' | awk '{print $2}')"
   },
   "version": "1.2.2"
 }
