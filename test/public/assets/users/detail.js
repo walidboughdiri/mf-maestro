@@ -23,13 +23,9 @@
   ) {
     appNode.innerHTML = `
     <div data-id="app" style="background:#dedeff;padding:20px;width:400px;">
-    <p data-id="title">users-detail@${groupRef} : click a color</p>
-    <button data-id="end">finish</button>
+    <p data-id="title">users-detail@${groupRef} : click a user to select it</p>
     <div data-id="console"></div>
   </div>`;
-    appNode
-      .querySelector("[data-id='end']")
-      .addEventListener("click", e => events.emit("users:detail:end"));
     events.on("users:detail:load", (...args) => loadUser(appNode, ...args));
   }
 

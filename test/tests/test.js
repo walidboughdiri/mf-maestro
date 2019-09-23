@@ -60,17 +60,32 @@ test("test loading app changing props", async t => {
 });
 
 test("mutate event and once/on event", async t => {
-  await t.click(Selector("[data-app-ref='micro-app-1@home1'] [data-id='b3']"));
+  await t.click(
+    Selector("[data-app-ref='micro-app-1@home1'] [data-id='emit']")
+  );
   const consoleNode = Selector(
     "[data-app-ref='micro-app-3@mac3'] [data-id='console']"
   );
-  await t.expect(consoleNode.innerText).eql("ma3:onceEvent received");
+  const consoleOnceNode = Selector(
+    "[data-app-ref='micro-app-3@mac3'] [data-id='console-once']"
+  );
+  await t
+    .expect(consoleNode.innerText)
+    .eql(`events.on("ma3:event") : 1 events received`);
 
-  await t.expect(consoleNode.getAttribute("once-event")).eql("1");
-  await t.expect(consoleNode.getAttribute("events-count")).eql("1");
-  await t.click(Selector("[data-app-ref='micro-app-1@home1'] [data-id='b3']"));
-  await t.expect(consoleNode.getAttribute("once-event")).eql("1");
-  await t.expect(consoleNode.getAttribute("events-count")).eql("2");
+  await t
+    .expect(consoleOnceNode.innerText)
+    .contains(`events.once("ma3:event") : 1 event received at`);
+
+  await t.expect(consoleNode.getAttribute("count")).eql("1");
+  await t.expect(consoleOnceNode.getAttribute("count")).eql("1");
+  const consoleOnceInnerText = await consoleOnceNode.innerText;
+  await t.click(
+    Selector("[data-app-ref='micro-app-1@home1'] [data-id='emit']")
+  );
+  await t.expect(consoleOnceNode.getAttribute("count")).eql("1");
+  await t.expect(consoleNode.getAttribute("count")).eql("2");
+  await t.expect(consoleOnceNode.innerText).contains(consoleOnceInnerText);
 });
 test("test blocked navigation", async t => {
   await t.click(Selector("[data-id='about']"));

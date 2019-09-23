@@ -3,7 +3,7 @@ export const resources = {
     translation: {
       "an error occured while loading the component":
         "an error occured while loading the component",
-      home: "homet",
+      home: "home",
       "Welcome to React": "Welcome to React and react-i18next",
     },
   },

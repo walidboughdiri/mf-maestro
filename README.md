@@ -360,9 +360,11 @@ When you define a ```groupRef``` prop to ```MicroAppComponent```, it is used as 
 <a name="chapter-front-guidelines"></a>
 ## Our micro-frontends guidelines
 
+- Your micro-frontend "api" is its list of in/out messages. Never listen to a direct message of another service. You would create dependencies.
+
 - Never share data between micro-frontends
 
-A micro-frontend only gets its data from its backend. The only data you can passed are the one you can find in url (id, query params....).
+A micro-frontend only gets its data from its backend (and if you are still using http calls to share data between you backend services, you should really think to switch to event sourcing). The only data you can passed are the one you can find in url (id, query params....).
 
 - A micro-frontend must always have a "loading" or "waiting" state since, sometimes, the data you need to load might not be in your microservice yet.
 
@@ -376,6 +378,8 @@ A micro-frontend only gets its data from its backend. The only data you can pass
 ## Tips & tricks
 
 - When you add a new page, do not forget it receives as props an object with history, location and match properties. This let you handle complex navigation cases if you need to dig deeper.
+- Never use a micro-frontend inside another one. We want teams independence. If you break this rule, you won't be able to scale your project, release loosely...
+- There are exceptional situations when you can break the "Never share data between micro-frontends" rules, but you must really be sure that you won't add dependencies between your services... And most of the time, we don't need it. So if you start doing this, stop and think you designed something bad...
 
 
 <a name="chapter-todo"></a>

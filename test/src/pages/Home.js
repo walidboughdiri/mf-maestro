@@ -5,22 +5,38 @@ import { MicroAppComponent } from "mf-maestro";
 
 export default function Home() {
   const [pageRef, events] = useEvents("Home");
-  events.mutateEvent("ma1:onceEvent", "ma3:onceEvent");
+  events.mutateEvent("ma1:event", "ma3:event");
   const { t } = useTranslation();
   return (
     <div>
       <h2>{t("home")}</h2>
-      <MicroAppComponent
-        app="micro-app-1"
-        groupRef="home1"
-        manifestUrl="http://localhost:3000/assets/manifest.json"
-        params={{ a: 2 }}
-      />
-      <MicroAppComponent
-        app="micro-app-3"
-        groupRef="mac3"
-        manifestUrl="http://localhost:3000/assets/manifest2.json"
-      />
+      <div style={{ background: "#ffffde" }}>
+        <ul
+          className="emit-mutate"
+          style={{ padding: "10px", listStyle: "none" }}
+        >
+          <li>
+            This demo the mutation of events and micro-frontends decoupling :
+          </li>
+          <li>microApp1@home1 will emit "ma1:event"</li>
+          <li>microApp3@mac3 listens to "ma3:event" with "once" and "on"</li>
+          <li>
+            MfMaestro will mutate "ma1:event" to "ma3:event", so microApp3@mac3
+            can react.
+          </li>
+        </ul>
+        <MicroAppComponent
+          app="micro-app-1"
+          groupRef="home1"
+          manifestUrl="http://localhost:3000/assets/manifest.json"
+          params={{ a: 2 }}
+        />
+        <MicroAppComponent
+          app="micro-app-3"
+          groupRef="mac3"
+          manifestUrl="http://localhost:3000/assets/manifest2.json"
+        />
+      </div>
       <MicroAppComponent
         app="react-app"
         groupRef="ref-react-app"
