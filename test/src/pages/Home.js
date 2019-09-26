@@ -1,11 +1,12 @@
 import React from "react";
 import { useEvents } from "mf-maestro";
 import { useTranslation } from "react-i18next";
-import { MicroAppComponent } from "mf-maestro";
+import { MicroAppComponent, IFrameMicroApp } from "mf-maestro";
 
 export default function Home() {
   const [pageRef, events] = useEvents("Home");
   events.mutateEvent("ma1:event", "ma3:event");
+  events.mutateEvent("iframe:user:clicked", "ma3:event");
   const { t } = useTranslation();
   return (
     <div>
@@ -37,6 +38,13 @@ export default function Home() {
           manifestUrl="http://localhost:3000/assets/manifest2.json"
         />
       </div>
+      <IFrameMicroApp
+        authorizedEvents={["iframe:user:clicked"]}
+        forwards={{ "ma1:event": "ma1:event:toIframe" }}
+        groupRef="iframe1"
+        src="http://localhost:3010/"
+        style={{ border: "0", height: "200px", margin: "10px", width: "500px" }}
+      />
       <MicroAppComponent
         app="react-app"
         groupRef="ref-react-app"

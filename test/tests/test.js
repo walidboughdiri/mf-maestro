@@ -43,14 +43,14 @@ test("test routing", async t => {
 
 test("test loading app changing props", async t => {
   await t.click(Selector("[data-id='about']"));
-  await loadApp1();
+  await t.click(Selector("[data-id='load-app-1']"));
   await t
     .expect(
       Selector("[data-id='about-page'] [data-app-ref='micro-app-1@usersIndex']")
         .exists
     )
     .ok();
-  await loadApp2();
+  await t.click(Selector("[data-id='load-app-2']"));
   await t
     .expect(
       Selector("[data-id='about-page'] [data-app-ref='micro-app-2@usersIndex']")
@@ -89,7 +89,7 @@ test("mutate event and once/on event", async t => {
 });
 test("test blocked navigation", async t => {
   await t.click(Selector("[data-id='about']"));
-  await loadApp2();
+  await t.click(Selector("[data-id='load-app-2']"));
   await t
     .expect(
       Selector("[data-app-ref='micro-app-2@usersIndex'] [data-id='console']")

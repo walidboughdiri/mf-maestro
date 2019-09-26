@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>MfMaestro iframe demo</title>
+  <style type="text/css">
+    html, body{
+      background:#FFBDBF;
+      font-family: verdana;
+      font-size:12px;
+      margin:0;
+      padding:10px;
+    }
+    #start-at{
+      margin: 5px;
+      font-size:10px;
+    }
+    #console{
+      background-color: antiquewhite;
+      font-weight:bold;
+      padding:10px;
+      margin:10px;
+    }
+  </style>
+  <script type="text/javascript">
+    function postMessage() {
+      parent.postMessage(
+        {action: "emit", event: "iframe:user:clicked", argument: {v1: 1, v2: 2}},
+        document.referrer
+      )
+    }
+  function receiveMessage(message) {
+    console.log("iframe received a message", message.data);
+    document.getElementById("console").innerHTML = "event received from \"" + message.data.pop() + "\" : \"" + message.data[0] + "\"";
+  }
+  window.addEventListener("message", receiveMessage, false);
+  </script>
+</head>
+<body>
+  <div id="root">
+    This is a <span style="color:red;">secured micro-frontend demo </span> in iframe on another domain/port (imagine a micro-frontend exposed by an untrusted partner)<br/>
+    It can receive and emit events using postMessage api, this means it is not able to access any data outside this iframe.
+    <div id="start-at"></div>
+    <div id="console"></div>
+    <button onclick="postMessage()">emit "iframe:user:clicked"</button>
+    <button onclick="parent.getElementById('root')">try unsecured action</button>
+    <script>document.getElementById("start-at").innerHTML = "started at " + new Date().toLocaleString()</script>
+  </div>
+</body>
+</html>

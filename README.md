@@ -36,7 +36,10 @@ It's a kind of pattern/DSL/framework (you can stay "high", almost only declarati
 	* [The events system in MfMaestro](#section-events-system)
 	* [The navigation system in MfMaestro](#section-navigation)
 	* [The ```useEvents``` effect](#section-useEvents)
+	* [How to embed untrusted micro-frontend securily ?](#section-untrusted)
+* [Design - Styles - Css](#chapter-css)
 * [Our micro-frontends guidelines](#chapter-front-guidelines)
+* [Tips&Tricks](#chapter-tips-tricks)
 * [TODO](#chapter-todo)
 
 <a name="chapter-repository"></a>
@@ -46,6 +49,7 @@ It's a kind of pattern/DSL/framework (you can stay "high", almost only declarati
  - in ```test```, you find a demo application with its tests :
  	- in ```test/apps```, you find micro-frontends coded with different frameworks to use in the demo. The build destination directories are always ```test/public/assets/apps-[framework name]```. They are all independent and have their own npm/webpack config.
  	- in ```test/tests```, you have the tests suite.
+ 	- in ```test/iframe-for-demo```, you find a project with iframe security demo. It just starts a webpack-dev-server to load the index.html in the main demo.
  	- in ```test/public```, you have all files exposed by react dev server to use the demo.
  		- the ```index.html``` is the page loaded when the webpack dev server start
  		- in ```test/public/assets```, you find the different micro-frontends (js and css) we load in the demo while navigating and emitting events. This is also the target directory for ```test/apps``` builds.
@@ -53,11 +57,23 @@ It's a kind of pattern/DSL/framework (you can stay "high", almost only declarati
 <a name="chapter-installation"></a>
 ## Installation
 
-To add MfMaestro to your project, go to your project directory and add the npm package:
+To add MfMaestro to your project, go to your project directory and add the npm package :
 
 ```
 npm install mf-maestro --save
 ```
+
+There are some peerDependencies in package json. You need to add them to uour app :
+```
+"peerDependencies": {
+  "i18next": "^17.0.6",
+  "react": "^16.8.6",
+  "react-dom": "^16.8.6",
+  "react-router-dom": "^5.0.1",
+  "react-i18next": "^10.11.4"
+}
+```
+This might change in the future.
 
 <a name="chapter-demo"></a>
 ## Demo
@@ -301,7 +317,7 @@ add a permanent listener for an event. It takes these arguments :
 **> Targetting 1 micro-frontend when you have multiple instances of the same micro-frontend on the page :**
 
 When you add a listener to an event, you will add the listener to your event and to a second event named ```groupRef + ":" + event```. This is done automatically. So if your event is called "mf1:users:clicked" in the micro-frontend with a groupRef "MyMf1", you will also add a listener to the event "MyMf1:mf1:users:clicked".  
-This let you react to an event with just a psecific micro-frontend. Imagine you have on the same page two instances of the same micro-frontend. If you want an event emitted by another micro-frontend to trigger an event of these micro-frontends, you can use the [```mutateEvent(sourceEvent, targetEvent)```](#events-system-mutateEvent) function. But if you do so, both micro-frontends will react. If you want to target only one of them, since they both listen to 2 events (one common : "target-event-name" and one not common : "groupRef:target-event-name"), you just need to mutate your event like this : ```mutateEvent("source-event-name", "groupRef:target-event-name")```.
+This let you react to an event with just a specific micro-frontend. Imagine you have on the same page two instances of the same micro-frontend. If you want an event emitted by another micro-frontend to trigger an event of these micro-frontends, you can use the [```mutateEvent(sourceEvent, targetEvent)```](#events-system-mutateEvent) function. But if you do so, both micro-frontends will react. If you want to target only one of them, since they both listen to 2 events (one common : "target-event-name" and one not common : "groupRef:target-event-name"), you just need to mutate your event like this : ```mutateEvent("source-event-name", "groupRef:target-event-name")```.
 
 - **once(event, callback, context)**  
 same as **on(event, callback, context)**, but reacts only one time to events.
@@ -357,6 +373,40 @@ When you call ```useEvents()```, the argument is an optional string (if you don'
 It returns an array, where the first element is the string itself, and the second element is the events object with all functions you need to [manage events](#section-events-system) binded so that the effect can when you unload the component remove all listeners so that you don't have to worry.
 When you define a ```groupRef``` prop to ```MicroAppComponent```, it is used as ```useEvents()``` argument.
 
+<a name="section-untrusted"></a>
+### How to embed untrusted micro-frontend securily ?
+
+If you need to embed a micro-frontend with strong security garanty, you can use our [```IframeMicroApp```component](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/IFrameMicroApp.js).  
+It will load an iframe with a configuration to authorize only some events in both ways. You can see the demo on page [Home](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js) :
+```
+<IframeMicroApp
+  authorizedEvents={["iframe:user:clicked"]}
+  forwards={{ "ma1:event": "ma1:event:toIframe" }}
+  groupRef="iframe1"
+  src="http://localhost:3010/"
+  style={{ border: "0", height: "200px", margin: "10px", width: "500px" }}
+/>
+```
+
+You can pass these props :
+
+- **authorizedEvents** : an array with the events you are ok to receive from iframe.
+- **forwards** : an object with the mutation of events you want to pass to the iframe (here ```ma1:event```will be passed to iframe as ```ma1:event:toIframe```).
+- **src** : iframe src.
+- **style** : some styles attributes for the iframe.
+
+This implementation is quite new, so it will be improved soon with new features. But it already works and you can use it.
+
+<a name="chapter-Design-Styles-Css"></a>
+##Design - Styles - Css
+
+One strategy to style micro-frontends is to build a first version with as few css rules as needed.
+Just design them so they are usable on all devices, reponsive, etc etc... Do not forget to scope your css rules so they won't interfer with others elements on pages.
+Integrate your micro-frontends on your mediator app (where you will have your main css). Your main rules should now add some design to your micro-frontends.
+In your main application, overide the micro-frontends css rules to finish the adaptation of your micro-frontends.
+
+This work (design css agnostic micro-frontends, and then adapt to your main app) requires a good knowledge of css, to keep your micro-frontends as modular as possible, while staying adaptable.
+
 <a name="chapter-front-guidelines"></a>
 ## Our micro-frontends guidelines
 
@@ -385,6 +435,7 @@ A micro-frontend only gets its data from its backend (and if you are still using
 <a name="chapter-todo"></a>
 ## TODO
 
+- improve this doc again and again...
 - add a mechanism to extract the framework from micro-frontend's build and be able to cache an already loaded framework (by version) and give it to a micro-frontend if it needs to. This would reduce micro-frontends sizes, since for now, each one needs to load its own version. This is the main drawback of MfMaestro for now.
 - move tests to [cypress.io](https://www.cypress.io/).
 - add list of UI/UX patterns we have been developping
