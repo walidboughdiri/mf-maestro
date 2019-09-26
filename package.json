@@ -55,5 +55,5 @@
     "start": "webpack --watch --mode development",
     "test": "npm run build && npm run build:apps && cd test && (npm start &) && testcafe chrome:headless tests/test.js && kill $(ps aux | grep '[w]ebpack-dev-server' | awk '{print $2}')"
   },
-  "version": "1.2.2"
+  "version": "1.3.0"
 }
