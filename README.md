@@ -66,11 +66,9 @@ npm install mf-maestro --save
 There are some peerDependencies in package json. You need to add them to uour app :
 ```
 "peerDependencies": {
-  "i18next": "^17.0.6",
   "react": "^16.8.6",
   "react-dom": "^16.8.6",
   "react-router-dom": "^5.0.1",
-  "react-i18next": "^10.11.4"
 }
 ```
 This might change in the future.
