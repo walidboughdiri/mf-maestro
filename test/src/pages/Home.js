@@ -1,16 +1,14 @@
 import React from "react";
 import { useEvents } from "mf-maestro";
-import { useTranslation } from "react-i18next";
 import { MicroAppComponent, IFrameMicroApp } from "mf-maestro";
 
 export default function Home() {
   const [pageRef, events] = useEvents("Home");
   events.mutateEvent("ma1:event", "ma3:event");
   events.mutateEvent("iframe:user:clicked", "ma3:event");
-  const { t } = useTranslation();
   return (
     <div>
-      <h2>{t("home")}</h2>
+      <h2>Home</h2>
       <div style={{ background: "#ffffde" }}>
         <ul
           className="emit-mutate"
