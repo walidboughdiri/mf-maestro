@@ -1,0 +1,5 @@
+{
+  "vue-app": {
+    "url":"http://localhost:3003/dist/app.js"
+  }
+}

@@ -10,16 +10,19 @@ One of the most important aspect in MfMaestro is to try to keep things SIMPLE, N
 
 You can think of the main motivation as this :
 
-*"As an application creator, I want to build an app with multiple pages, each one with its url. I'm owner (I design) of these pages, my main css, and the routing/navigations rules. On these pages, I will simply put micro-frontends which I'm not owner of. These micro-frontends are exposed on http urls by teams that don't know anything about others applications on the page where they will be added, so they can't react directly to "events" of these others applications to load or change their data. Thus, I use MfMaestro as a mediator to "synchronize" them"*
+*"As an application creator, I want to build an app with multiple pages, each one with its url. I'm owner (I design) of these pages, my main css, and the routing/navigations rules. On these pages, I will simply put micro-frontends which I'm not owner of. These micro-frontends are exposed on http urls by teams that don't know anything about others applications on the page where they will be added, so they can't react directly to "events" of these others applications to load or change their data. Thus, I use MfMaestro as a mediator to "synchronize" them".*
 
 It's a kind of pattern/DSL/framework (you can stay "high", almost only declarative/config, or go deep with more programming skills) to build your application with few steps :
 
-1. Create **one or many micro-frontend apps** compatible with MfMaestro dynamic load mechanism ([demo](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js)) and a manifest file ([demo](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/manifest.json)), and put them on a webserver
+1. Create **one or many micro-frontend apps** compatible with MfMaestro dynamic load mechanism ([demo](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-1/app.js)) and a manifest file ([demo](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/manifest.json)), and put them on a webserver
 2. Create **your main application** (the one loading your micro-frontends) with mf-maestro npm package (a simple npm init and npm install)
-3. Add pages folder with your first page ([see demo](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js))
+3. Add pages folder with your first page ([see demo](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js))
 4. Add microfrontends to pages with our react component ```MicroAppComponent```. It's as simple as : ```<MicroAppComponent app="microapp-name-in-manifest" manifestUrl="https://...manifest-url..." />```
 5. Start your app. Your page should load and micro-frontends will load from their urls and start.
 6. Now you can go deeper : improve your app with events, routing, navigation, create more complex MicroAppComponent component to handle specific logic... everything that allows you to build a real and more complex app than a simple "hello micro-frontend".
+
+As the maestro, **you** create **"DEPENDENCIES/COUPLING"** between micro-frontends **you put** on **your** pages by defining how they must react. It's your **role** because you buid your application.
+And another application builder will create totally different dependencies with the same micro-frontends.
 
 ## Documentation sections
 
@@ -45,14 +48,16 @@ It's a kind of pattern/DSL/framework (you can stay "high", almost only declarati
 <a name="chapter-repository"></a>
 ## Repository organization
 
- - in ```src``` you find the Mediator source code.
- - in ```test```, you find a demo application with its tests :
- 	- in ```test/apps```, you find micro-frontends coded with different frameworks to use in the demo. The build destination directories are always ```test/public/assets/apps-[framework name]```. They are all independent and have their own npm/webpack config.
- 	- in ```test/tests```, you have the tests suite.
- 	- in ```test/iframe-for-demo```, you find a project with iframe security demo. It just starts a webpack-dev-server to load the index.html in the main demo.
- 	- in ```test/public```, you have all files exposed by react dev server to use the demo.
- 		- the ```index.html``` is the page loaded when the webpack dev server start
- 		- in ```test/public/assets```, you find the different micro-frontends (js and css) we load in the demo while navigating and emitting events. This is also the target directory for ```test/apps``` builds.
+ - in [```src/```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/) you find the Mediator source code.
+ - in [```tests/```](https://github.com/calions-app/mf-maestro/blob/master/tests), you have the tests suite.
+ - in [```demo/```](https://github.com/calions-app/mf-maestro/blob/master/demo/), you find two directories :
+ 	- in [```mediator-app/```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/mediator-app/), you have a demo mediator app (we call **a mediator app** the main application where you mount your micro-frontends. It's your app, the one your users will use). You can use it as a start for your tests or your new application, but you'll need to remove some code you might not need, like the [```src/components/```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/mediator-app/src/components/).
+ 	
+ 		- in [```public/```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/mediator-app/public/), you have all files exposed by react dev server to use the demo :
+ 			- the [```index.html```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/mediator-app/public/index.html) is the page loaded when you call the ```http://localhost:3000/```
+ 			- in [```assets/```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/mediator-app/public/assets/), you find some micro-frontends (js and css) we load in the demo while navigating and emitting events.
+ 	- in [```micro-frontends-apps/```](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/), you have micro-frontends projects coded with different frameworks. Each one is independent, with its own build process, package.json, starts with ```npm start``` on its own port, and serves its own ```manifest.json``` and ```app.js``` files and can be loaded in its own html page on their localhost port). They are started and used in the demo. These apps are here to demonstrate that coding a new micro-frontend **changes nothing in your usual developper experience.** (for example, since they also have their own independant html page, you can load them in webpage and test them independently).
+ 		- in [```iframe-for-demo/```](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/iframe/), you find a project with iframe security demo. It just starts a webpack-dev-server to load the index.html in the main demo.
 
 <a name="chapter-installation"></a>
 ## Installation
@@ -76,21 +81,23 @@ This might change in the future.
 <a name="chapter-demo"></a>
 ## Demo
 
-A demo application (also used for integration tests) is availabe in [the```test```directory](https://github.com/calions-app/mf-maestro/tree/master/test)
+A demo application (also used for integration tests) is availabe in [the```demo```directory](https://github.com/calions-app/mf-maestro/tree/master/demo)
 
-It loads multiple micro applications, coded with different frameworks and versions (VannillaJS, Elm, Angular, Vue, React, EmberJs). The important mechanisms to look at are tested in the [```test/tests/test.js```](https://github.com/calions-app/mf-maestro/blob/master/test/tests/test.js) file.
+It loads multiple micro applications, coded with different frameworks and versions (VannillaJS, Elm, Angular, Vue, React, EmberJs). The important mechanisms to look at are tested in the [```tests/test.js```](https://github.com/calions-app/mf-maestro/blob/master/tests/test.js) file.
 
 To start the demo :
 
 1. Go to mf-maestro root and run ```npm link```
-2. Go to ```mf-maestro/test``` directory and run ```npm link mf-maestro```
+2. Go to ```mf-maestro/demo/mediator-app/``` directory and run ```npm link mf-maestro```
 3. Go to mf-maestro root and run : ```npm run demo```
 4. Go to https://localhost:3000/
+5. After you stop the demo process, run ```npm run stop``` to kill all started webpack-dev-server processes.
 
 <a name="chapter-test"></a>
 ## Tests
 
-Tests are run using the demo app, with [TestCafe](https://devexpress.github.io/testcafe/). Setup npm links like you would do to run the demo if it is not yet already done.  
+Tests are run using the demo app, with [TestCafe](https://devexpress.github.io/testcafe/).  
+Setup npm links like you would do to run the demo if it is not yet already done.  
 Then go to ```mf-maestro/``` root directory and run : ```npm run test```
 By default, tests are run with chrome headless, but you can use all [TestCafe](https://devexpress.github.io/testcafe/) functionnalities.
 
@@ -113,11 +120,12 @@ As explained in the intro, when we designed MfMaestro, we wanted to build applic
 }
 ```
 You can think of manifests as kind of API to get micro-frontends code (js) and design (css).
+We called it manifest, but you can name it as you want. There is nothing official here. It's just a new concept.
 
 It's a json stucture, where the keys are the names of the apps we will use as props in the MicroAppComponent on pages :  
 ```<MicroAppComponent app="micro-app-2" manifestUrl="https://service1.mydomain.com/mf_maestro.json" />```
 
-You can have a look at our 2 manifest files ([1](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/manifest.json) and [2](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/manifest2.json)) in the demo application. And look how we build a [page](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js) : it's almost only declarative at the beginning. Simple and fast to start!
+You can have a look at our 2 manifest files ([1](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/manifest.json) and [2](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/manifest2.json)) in the demo application. And look how we build a [page](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js) : it's almost only declarative at the beginning. Simple and fast to start!
 
 When MfMaestro find the ```MicroAppComponent``` component in a page, it will load the manifest declared in prop ```manifestUrl```, then use the ```app``` prop to load the associated javascript and css.
 
@@ -149,14 +157,14 @@ This code could go in the ```app.9876.js``` file for example.
 
 To be usable by MfMaestro, your micro-frontend code always start by calling the ```window.MfMaestro.registerMicroApp``` function with the name of your app (the same name used in the manifest key) and a { start, stop } object as arguments.  
 The ```start```method is called when MfMaestro mounts the MicroAppComponent component, and ```stop``` when it unmounts.  
-Usually you put in ```start``` function the code to start your Elm/[React](https://github.com/calions-app/mf-maestro/blob/master/test/apps/react-16-8-hooks/app/app.js)/[Vue](https://github.com/calions-app/mf-maestro/blob/master/test/apps/vue/src/app.js)/Angular/EmberJS/[VanillaJS](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/users/master.js)... application, add events listening and reactions, navigation rules to use modals for example, etc etc... But you can do it [deeper](#section-useEvents) in your app, pages, or micro-frontend's code. For example, put here common app's behaviours, and add on each page its events to prevent headache in events and navigation handling in one place for the whole app!!!!.
+Usually you put in ```start``` function the code to start your Elm/[React](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/react-16-8-hooks/app/app.js)/[Vue](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/vue/src/app.js)/Angular/EmberJS/[VanillaJS](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/users/master.js)... application, add events listening and reactions, navigation rules to use modals for example, etc etc... But you can do it [deeper](#section-useEvents) in your app, pages, or micro-frontend's code. For example, put here common app's behaviours, and add on each page its events to prevent headache in events and navigation handling in one place for the whole app!!!!.
 In ```stop``` function, you will usually pay attention to be sure you don't have memory leak when you unmount you micro-frontend, like when you attached an event listener and forget to remove it (But for this specific case, MfMaestro automatically gives you, in the ```options``` argument of the start function, a method to automatically manage events, so you don't have to, see bellow). You have multiple articles on internet about how to create and detect memory leaks in javascript in the browser :
 
 * [https://auth0.com/blog/four-types-of-leaks-in-your-javascript-code-and-how-to-get-rid-of-them/](https://auth0.com/blog/four-types-of-leaks-in-your-javascript-code-and-how-to-get-rid-of-them/)
 * [https://developers.google.com/web/tools/chrome-devtools/memory-problems/](https://developers.google.com/web/tools/chrome-devtools/memory-problems/)
 * ...
 
-So, on our web server, for a microservice, we have N ```.js``` files (one per micro-frontend application, see the demo files here : [1](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js), [2](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js), [3](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-3/app.js), [4](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/apps-react-15/app.js), [5](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/apps-react-16-8-hooks/app.js), [6](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/apps-vue/app.js)), each one registering in our main application an object with a start and a stop method when it is loaded, and 1 manifest file per service (see demo here: [1](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/manifest.json), [2](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/manifest2.json)) with metadata to tell to our MfMaestro app where to find the js and css files for our micro-frontends.
+So, on our web server, for a microservice, we have N ```.js``` files (one per micro-frontend application, see the demo files here : [1](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-1/app.js), [2](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js), [3](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-3/app.js), [4](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/apps-react-15/app.js), [5](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/apps-react-16-8-hooks/app.js), [6](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/apps-vue/app.js)), each one registering in our main application an object with a start and a stop method when it is loaded, and 1 manifest file per service (see demo here: [1](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/manifest.json), [2](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/manifest2.json)) with metadata to tell to our MfMaestro app where to find the js and css files for our micro-frontends.
 
 Our global architecture, in terms of files per service, looks like this:
 
@@ -210,37 +218,37 @@ MyMediatorApp/
    ...
 ```
 
-(1) **```components```** directory : put here your own React components for your pages. You decide to create a new component usually when you need to handle specific logic (events handling, side effects...) not available in MfMaestro basic components. You can view an [example](https://github.com/calions-app/mf-maestro/blob/master/test/src/components/users/All.js).
+(1) **```components```** directory : put here your own React components for your pages. You decide to create a new component usually when you need to handle specific logic (events handling, side effects...) not available in MfMaestro basic components. You can view an [example](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/components/users/All.js).
 
-(2) **```components/users```** directory : this directory contains a component with more logic : [see an example](https://github.com/calions-app/mf-maestro/blob/master/test/src/components/users/All.js)
+(2) **```components/users```** directory : this directory contains a component with more logic : [see an example](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/components/users/All.js)
 
-(3) **```index.js```** : this file starts the app ([see an example](https://github.com/calions-app/mf-maestro/blob/master/test/src/index.js)) calling [the ```startMediator```function](https://github.com/calions-app/mf-maestro/blob/master/src/startMediator.js) with 3 args :
+(3) **```index.js```** : this file starts the app ([see an example](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/index.js)) calling [the ```startMediator```function](https://github.com/calions-app/mf-maestro/blob/master/src/startMediator.js) with 3 args :
 
 - **targetDomElementId** : the id of the dom element where we want to start our app
 - **MainPage** : the root component of your app, injected into the [React router](https://github.com/calions-app/mf-maestro/blob/master/src/MediatorApp.js)
 - **init** : a function call at the mediator start to configure the application, see bellow init.js (4)
 
-(4) **```init.js```** : this file exports a function (run when [the main app starts](https://github.com/calions-app/mf-maestro/blob/master/src/MediatorApp.js#L10)) used mainly to define how [our events are managed](https://) and config options ([see demo file](https://github.com/calions-app/mf-maestro/blob/master/test/src/init.js)).
+(4) **```init.js```** : this file exports a function (run when [the main app starts](https://github.com/calions-app/mf-maestro/blob/master/src/MediatorApp.js#L10)) used mainly to define how [our events are managed](https://) and config options ([see demo file](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/init.js)).
 The object returned by this function is also used as a [config for our MediatorApp](https://github.com/calions-app/mf-maestro/blob/master/src/services/configureApp.js). For now you can only pass these keys :
 
-- **MicroAppLoadingComponent** : a component to replace the default loading component (what is visible on the page in the micro-frontend destination div while the mediator loads a manifest or a js code file : [default](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppLoadingComponent.js) and [custom for demo app](https://github.com/calions-app/mf-maestro/blob/master/test/src/components/DemoMicroAppLoadingComponent.js).
+- **MicroAppLoadingComponent** : a component to replace the default loading component (what is visible on the page in the micro-frontend destination div while the mediator loads a manifest or a js code file : [default](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppLoadingComponent.js) and [custom for demo app](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/components/DemoMicroAppLoadingComponent.js).
 
 (5) **```pages```** directory : all app's pages where we put components/micro-frontends.
 
-(6) **```MainPage.js```** : the main page of our app ([see example](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/MainPage.js)) injected in the ```startMediator```function in ```index.js``` file (3). Usually this page would be your main router.  
+(6) **```MainPage.js```** : the main page of our app ([see example](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/MainPage.js)) injected in the ```startMediator```function in ```index.js``` file (3). Usually this page would be your main router.  
 
-(7) **```Page1.js```** :  a real page with content [see demo file](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js)
+(7) **```Page1.js```** :  a real page with content [see demo file](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js)
 
 <a name="section-function-start"></a>
 ### Options and params sent [to start() function](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/NativeMicroApp.js) of your micro-frontend
 
 1. appNode
 
-  the dom node where your app put its content. Use it like a normal dom node, nothing special. You can view how to use it [here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js#L13)
+  the dom node where your app put its content. Use it like a normal dom node, nothing special. You can view how to use it [here](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-1/app.js#L13)
 
 2. params
 
- This is a simple object with params for your app. ```params``` is a merge between prop of your react component and url path params defined in the react router. Url params are passed to all micro-frontends, and prop params are unique for each one. You can view a demo [here for params prop](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js#L15) and for path params [router](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/MainPage.js#L29) / [micro-frontend](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L45)
+ This is a simple object with params for your app. ```params``` is a merge between prop of your react component and url path params defined in the react router. Url params are passed to all micro-frontends, and prop params are unique for each one. You can view a demo [here for params prop](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js#L15) and for path params [router](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/MainPage.js#L29) / [micro-frontend](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js#L45)
 
 3. options
 
@@ -254,12 +262,12 @@ The object returned by this function is also used as a [config for our MediatorA
  
  * ```events```
 
-  an object with [already binded functions](https://github.com/calions-app/mf-maestro/blob/master/src/effects/useEvents.js#L24) to use events. IMPORTANT : always use these functions to add/remove events, because it will automatically manage events listeners, removing listeners when your app is removed from the dom. Not using these functions can lead to memory leak (your components will be removed from the dom, but will stay in memory because of a reference to a listener). You can view a demo [here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js) with ```emit``` and ```on```
+  an object with [already binded functions](https://github.com/calions-app/mf-maestro/blob/master/src/effects/useEvents.js#L24) to use events. IMPORTANT : always use these functions to add/remove events, because it will automatically manage events listeners, removing listeners when your app is removed from the dom. Not using these functions can lead to memory leak (your components will be removed from the dom, but will stay in memory because of a reference to a listener). You can view a demo [here](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js) with ```emit``` and ```on```
 <a name="options-navigation"></a>
 
  * ```navigation```
 
-  an object to [block/unblock](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) navigation between page transition. Usefull for example if you want to show a modal to your user before he leaves the current page. [demo](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L20)
+  an object to [block/unblock](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) navigation between page transition. Usefull for example if you want to show a modal to your user before he leaves the current page. [demo](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js#L20)
 <a name="options-navigation"></a>
 
  * ```queryParams```
@@ -279,9 +287,9 @@ They are (and work the same) the same arguments sent to ```start()``` function.
 
   ```https://mydomain.com/users?microApp1Ref={var1:12,var2:"var2value",...}&microApp2Ref={var1:"hello", var3:"world",...}```
 
-  and be able to send these values in your [micro-frontends ```start``` functions](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-1/app.js).
+  and be able to send these values in your [micro-frontends ```start``` functions](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-1/app.js).
 
-  To let the mediator connect your url's json5 to a micro-frontend on the page, you need to add a ```groupRef``` prop to your react MicroAppComponent component ([demo](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js)), and use this groupRef as the key of your json5 value in your query string (```home1``` here): ```...myUrl?home1={my json5 object}```
+  To let the mediator connect your url's json5 to a micro-frontend on the page, you need to add a ```groupRef``` prop to your react MicroAppComponent component ([demo](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js)), and use this groupRef as the key of your json5 value in your query string (```home1``` here): ```...myUrl?home1={my json5 object}```
 
 <a name="section-events-system"></a>
 ### The events system in MfMaestro
@@ -300,7 +308,7 @@ emit an event in the system. It accepts these arguments :
 	            It's like a payload for your events.  
 	            MfMaestro automatically adds the groupRef as last arg sent to callbacks.
 
-You can view some examples [in the micro app 2 demo code](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js).
+You can view some examples [in the micro app 2 demo code](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js).
 
 - **on(event, callback, context)**  
 add a permanent listener for an event. It takes these arguments :
@@ -336,7 +344,7 @@ react to an event by changing the url (page). It takes these arguments :
 - **mutateEvent(sourceEvent, targetEvent, transformArgsFn)**  
 add an event listener to emit ```targetEvent``` when ```sourceEvent``` is emitted. It takes these arguments :
    - sourceEvent : a string, the name of the event you want to react to
-	- targetEvent : a string (the name of the event to emit) or a function that will receive all args and return the name of the target event (usefull when you want to [dynamically determine targetEvent](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Topics.Js#L8))
+	- targetEvent : a string (the name of the event to emit) or a function that will receive all args and return the name of the target event (usefull when you want to [dynamically determine targetEvent](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Topics.Js#L8))
 	- transformArgsFn (optional) : a function that will received all "...args" passed to emit() to transform them if necessary
 
 - **removeListener(event, callback, context)**  
@@ -353,7 +361,7 @@ We use [eventemitter3](https://github.com/primus/eventemitter3) to manage events
 In the options passed to the ```start```function, you have [```options.navigation```](#options-navigation). You find in this object [2 functions](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) you can call when you need to block or authorize navigation. This can be usefull for example, if you need to show a modal to the user for validation before leaving a page.
 
 To block a navigation, just call ```options.navigation.blockNavigation()```. For example, you can on a button, set a callback on the ```click``` that will call ```options.navigation.blockNavigation()``` and emit an event to change to change the navigation. MfMaestro (using [history](https://github.com/ReactTraining/history) will store the target url and prevent navigation. You can then show a modal, or ask for a validation or  anything you need to do. You will call another callback when the user react to your UI. In this callback, you will process what you need to do before leaving the page, and call ```options.navigation.unblockNavigation()```. The page will then change.
-You can view a [demo here](https://github.com/calions-app/mf-maestro/blob/master/test/public/assets/micro-app-2/app.js#L20)
+You can view a [demo here](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js#L20)
 
 When you call ```options.navigation.unblockNavigation()```, a message is emited : ```emit("navigation:location:changed", { location: state.targetLocation });```. You can listen to this message if you need to react to it.
 
@@ -364,7 +372,7 @@ The useEvents effect is a react effect we use everywhere we need the events syst
 We use it:
 - in the [MediatorApp](https://github.com/calions-app/mf-maestro/blob/master/src/MediatorApp.js) to call the ```init()``` function with main app events.
 - in the [MicroAppComponent](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppComponent.js) to be able to call ```start()``` and ```stop()``` with [```options.events```](#options-events) argument.
-- in pages, when we want to activate/deactivate events or navigation only when we are on a specific page. This allows to not have the whole events config in the init function. You can look at [some demo pages](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js).
+- in pages, when we want to activate/deactivate events or navigation only when we are on a specific page. This allows to not have the whole events config in the init function. You can look at [some demo pages](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js).
 
 To use it, just ```import { useEvents } from "mf-maestro";``` and then initialize it with ```const [groupRef, events] = useEvents("NameOfThisGroupRef");```.
 When you call ```useEvents()```, the argument is an optional string (if you don't pass anyting, a uuid is generated by default). This string is used to manage the effect and its state with redux.
@@ -375,7 +383,7 @@ When you define a ```groupRef``` prop to ```MicroAppComponent```, it is used as 
 ### How to embed untrusted micro-frontend securily ?
 
 If you need to embed a micro-frontend with strong security garanty, you can use our [```IframeMicroApp```component](https://github.com/calions-app/mf-maestro/blob/master/src/MicroAppTypes/IFrameMicroApp.js).  
-It will load an iframe with a configuration to authorize only some events in both ways. You can see the demo on page [Home](https://github.com/calions-app/mf-maestro/blob/master/test/src/pages/Home.js) :
+It will load an iframe with a configuration to authorize only some events in both ways. You can see the demo on page [Home](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js) :
 ```
 <IframeMicroApp
   authorizedEvents={["iframe:user:clicked"]}
@@ -394,6 +402,8 @@ You can pass these props :
 - **style** : some styles attributes for the iframe.
 
 This implementation is quite new, so it will be improved soon with new features. But it already works and you can use it.
+
+You have a demo iframe in [demo/micro-frontends-apps/iframe/](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/iframe). As all demo, it is independent and startable on its own port. See [webpack config](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/iframe/webpack.config.js).
 
 <a name="chapter-Design-Styles-Css"></a>
 ##Design - Styles - Css
@@ -422,12 +432,15 @@ A micro-frontend only gets its data from its backend (and if you are still using
 
 - add a mechanism to let the user know when he's using an outdated version of the micro-frontend, with a way to reload the service.
 
+- When you develop a new micro-frontend, you will use mf-maestro events methods in your code. If you need to test your micro-frontend as an independent application, you can use a stubbed version of these methods as we do in all [our demo](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/react-16-8-hooks/app/app.js). It's really easy and it also demonstrates that your application is not tightly coupled with mf-maestro if you need later to use it with something else. You will just have a mecanism to handle events. Not bad, isn't it ?
+
 <a name="chapter-tips-tricks"></a>
 ## Tips & tricks
 
 - When you add a new page, do not forget it receives as props an object with history, location and match properties. This let you handle complex navigation cases if you need to dig deeper.
 - Never use a micro-frontend inside another one. We want teams independence. If you break this rule, you won't be able to scale your project, release loosely...
 - There are exceptional situations when you can break the "Never share data between micro-frontends" rules, but you must really be sure that you won't add dependencies between your services... And most of the time, we don't need it. So if you start doing this, stop and think you designed something bad...
+
 
 
 <a name="chapter-todo"></a>

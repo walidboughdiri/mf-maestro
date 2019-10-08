@@ -1,0 +1,12 @@
+{
+  "micro-app-1": {
+    "css": "/assets/micro-app-1/app.css",
+    "url":"/assets/micro-app-1/app.js"
+  },
+  "users-master": {
+    "url":"/assets/users/master.js"
+  },
+  "users-detail": {
+    "url":"/assets/users/detail.js"
+  }
+}
