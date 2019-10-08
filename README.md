@@ -248,7 +248,7 @@ The object returned by this function is also used as a [config for our MediatorA
 
 2. params
 
- This is a simple object with params for your app. ```params``` is a merge between prop of your react component and url path params defined in the react router. Url params are passed to all micro-frontends, and prop params are unique for each one. You can view a demo [here for params prop](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js#L15) and for path params [router](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/MainPage.js#L29) / [micro-frontend](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js#L45)
+ This is a simple object with params for your app. ```params``` is a merge between prop of your react component and url path params defined in the react router. Url params are passed to all micro-frontends, and prop params are unique for each one. You can view a demo [here for params prop](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/Home.js#L31) and for path params [router](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/pages/MainPage.js#L29) / [micro-frontend](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js#L45)
 
 3. options
 
@@ -267,7 +267,7 @@ The object returned by this function is also used as a [config for our MediatorA
 
  * ```navigation```
 
-  an object to [block/unblock](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) navigation between page transition. Usefull for example if you want to show a modal to your user before he leaves the current page. [demo](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js#L20)
+  an object to [block/unblock](https://github.com/calions-app/mf-maestro/blob/master/src/navigation.js) navigation between page transition. Usefull for example if you want to show a modal to your user before he leaves the current page. [demo](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/public/assets/micro-app-2/app.js#L30)
 <a name="options-navigation"></a>
 
  * ```queryParams```
@@ -406,7 +406,7 @@ This implementation is quite new, so it will be improved soon with new features.
 You have a demo iframe in [demo/micro-frontends-apps/iframe/](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/iframe). As all demo, it is independent and startable on its own port. See [webpack config](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/iframe/webpack.config.js).
 
 <a name="chapter-Design-Styles-Css"></a>
-##Design - Styles - Css
+## Design - Styles - Css
 
 One strategy to style micro-frontends is to build a first version with as few css rules as needed.
 Just design them so they are usable on all devices, reponsive, etc etc... Do not forget to scope your css rules so they won't interfer with others elements on pages.
