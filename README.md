@@ -56,7 +56,7 @@ And another application builder will create totally different dependencies with 
  		- in [```public/```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/mediator-app/public/), you have all files exposed by react dev server to use the demo :
  			- the [```index.html```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/mediator-app/public/index.html) is the page loaded when you call the ```http://localhost:3000/```
  			- in [```assets/```](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/mediator-app/public/assets/), you find some micro-frontends (js and css) we load in the demo while navigating and emitting events.
- 	- in [```micro-frontends-apps/```](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/), you have micro-frontends projects coded with different frameworks. Each one is independent, with its own build process, package.json, starts with ```npm start``` on its own port, and serves its own ```manifest.json``` and ```app.js``` files and can be loaded in its own html page on their localhost port). They are started and used in the demo. These apps are here to demonstrate that coding a new micro-frontend **changes nothing in your usual developper experience.** (for example, since they also have their own independant html page, you can load them in webpage and test them independently).
+ 	- in [```micro-frontends-apps/```](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/), you have micro-frontends projects coded with different frameworks. Each one is independent, with its own build process, package.json, starts with ```npm start``` on its own port, and serves its own ```manifest.json``` and ```app.js``` files and can be loaded in its own html page on their localhost port). They are started and used in the demo. These apps are here to demonstrate that coding a new micro-frontend **changes nothing in your usual developer experience.** (for example, since they also have their own independant html page, you can load them in webpage and test them independently).
  		- in [```iframe-for-demo/```](https://github.com/calions-app/mf-maestro/blob/master/demo/micro-frontends-apps/iframe/), you find a project with iframe security demo. It just starts a webpack-dev-server to load the index.html in the main demo.
 
 <a name="chapter-installation"></a>
@@ -439,9 +439,9 @@ A micro-frontend only gets its data from its backend (and if you are still using
 
 - When you add a new page, do not forget it receives as props an object with history, location and match properties. This let you handle complex navigation cases if you need to dig deeper.
 - Never use a micro-frontend inside another one. We want teams independence. If you break this rule, you won't be able to scale your project, release loosely...
-- There are exceptional situations when you can break the "Never share data between micro-frontends" rules, but you must really be sure that you won't add dependencies between your services... And most of the time, we don't need it. So if you start doing this, stop and think you designed something bad...
-
-
+- There are exceptional situations when you can break the "Never share data between micro-frontends" rules, but you must really be sure that you won't add dependencies between your services... And most of the time, we don't need it. So if you start doing this, stop and think you designed something bad.
+- When you code a micro-frontend, it is not your role to think about breaking contracts with the main mediator app. If you need to change your events data, change them. It is the responsability of the main team, the one coding the mediator app to adapt. They have tests to validate that your new version will work or not. And you don't know which events they use so maybe changing an event will not change anything for a team.
+- So, as the main team, you need to have browser tests to validate that a new version of a micro-frontend won't break your UI. Pay attention to testing events.
 
 <a name="chapter-todo"></a>
 ## TODO
