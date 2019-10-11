@@ -89,9 +89,9 @@ To start the demo :
 
 1. Go to mf-maestro root and run ```npm link```
 2. Go to ```mf-maestro/demo/mediator-app/``` directory and run ```npm link mf-maestro```
-3. Go to mf-maestro root and run : ```npm run demo```
+3. Go to mf-maestro root and run : ```npm run demo``` (for each demo micro-frontend, it will install node modules and start a webpack dev server)
 4. Go to https://localhost:3000/
-5. After you stop the demo process, run ```npm run stop``` to kill all started webpack-dev-server processes.
+5. After you stop the demo process, run ```npm run stop``` to kill all started webpack-dev-server processes. If you want to clean all created directories for the demo, you can use ```npm run clean```. It will delete ALL ```node_modules``` and ```dist``` directories.
 
 <a name="chapter-test"></a>
 ## Tests
