@@ -13,7 +13,7 @@ export { default as IFrameMicroApp } from "./MicroAppTypes/IFrameMicroApp";
 export { default as MicroAppComponent } from "./MicroAppComponent";
 
 export function startMediator(targetDomElementId, MainPage, init) {
-  validate(arguments, ["string", "function", "function"]);
+  validate(arguments, ["string", "function", "function="]);
 
   ReactDOM.render(
     <MediatorApp init={init} mainPage={MainPage} />,

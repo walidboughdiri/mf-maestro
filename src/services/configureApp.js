@@ -1,4 +1,5 @@
 import { validate } from "byContract";
+import MicroAppLoadingComponent from "../MicroAppLoadingComponent";
 import {
   appIsInitialized,
   initializeApp,
@@ -8,14 +9,16 @@ import {
 export default function configureApp(init, events) {
   validate(init, "function=");
   if (appIsInitialized()) return;
-  if (init == undefined) return;
   initializeApp();
-  const config = init({
-    mutateEvent: events.mutateEvent,
-    on: events.on,
-    once: events.once,
-    redirectOnEvent: events.redirectOnEvent,
-  });
+  const config =
+    typeof init === "function"
+      ? init({
+          mutateEvent: events.mutateEvent,
+          on: events.on,
+          once: events.once,
+          redirectOnEvent: events.redirectOnEvent,
+        })
+      : { MicroAppLoadingComponent };
 
   setMicroAppLoadingComponent(config.MicroAppLoadingComponent);
 }

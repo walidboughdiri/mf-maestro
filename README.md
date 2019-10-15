@@ -224,7 +224,7 @@ MyMediatorApp/
 
 - **targetDomElementId** : the id of the dom element where we want to start our app
 - **MainPage** : the root component of your app, injected into the [React router](https://github.com/calions-app/mf-maestro/blob/master/src/MediatorApp.js)
-- **init** : a function call at the mediator start to configure the application, see bellow init.js (4)
+- **init** : an optional function called when the mediator starts to configure the application, see bellow init.js (4)
 
 (4) **```init.js```** : this file exports a function (run when [the main app starts](https://github.com/calions-app/mf-maestro/blob/master/src/MediatorApp.js#L10)) used mainly to define how [our events are managed](https://) and config options ([see demo file](https://github.com/calions-app/mf-maestro/blob/master/demo/mediator-app/src/init.js)).
 The object returned by this function is also used as a [config for our MediatorApp](https://github.com/calions-app/mf-maestro/blob/master/src/services/configureApp.js). For now you can only pass these keys :
