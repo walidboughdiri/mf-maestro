@@ -46,9 +46,9 @@
   "repository": "github:calions-app/mf-maestro",
   "scripts": {
     "build": "webpack --mode production",
-    "clean": "npm run stop && rm -rf dist node_modules demo/mediator-app/node_modules demo/micro-frontends-apps/react-15/node_modules demo/micro-frontends-apps/react-16-8-hooks/node_modules demo/micro-frontends-apps/vue/node_modules demo/micro-frontends-apps/iframe/node_modules",
-    "start:apps": "cd demo/micro-frontends-apps/react-15 && ([ ! -d \"node_modules\" ] && npm ci) && (npm start &) && cd ../react-16-8-hooks && ([ ! -d \"node_modules\" ] && npm ci) && (npm start &) && cd ../vue && ([ ! -d \"node_modules\" ] && npm ci) && (npm start &) && cd ../iframe && ([ ! -d \"node_modules\" ] && npm ci) && (npm start &) && cd ../..",
-    "demo": "([ ! -d \"node_modules\" ] && npm ci) && npm run build && npm link && npm run start:apps && cd demo/mediator-app && ([ ! -d \"node_modules\" ] && npm ci) && npm link mf-maestro && (npm start &) && cd ../..",
+    "clean": "rm -rf dist node_modules demo/mediator-app/node_modules demo/micro-frontends-apps/react-15/node_modules demo/micro-frontends-apps/react-16-8-hooks/node_modules demo/micro-frontends-apps/vue/node_modules demo/micro-frontends-apps/iframe/node_modules",
+    "start:apps": "cd demo/micro-frontends-apps/react-15 && ([ ! -d \"node_modules\" ] && npm ci || true) && (npm start &) && cd ../react-16-8-hooks && ([ ! -d \"node_modules\" ] && npm ci || true) && (npm start &) && cd ../vue && ([ ! -d \"node_modules\" ] && npm ci || true) && (npm start &) && cd ../iframe && ([ ! -d \"node_modules\" ] && npm ci || true) && (npm start &) && cd ../../..",
+    "demo": "([ ! -d \"node_modules\" ] && npm ci  || true) && npm run build && npm link && npm run start:apps && cd demo/mediator-app && ([ ! -d \"node_modules\" ] && npm ci || true) && npm link mf-maestro && (npm start &) && cd ../..",
     "stop": "kill $(ps aux | grep '[w]ebpack-dev-server' | awk '{print $2}')",
     "start": "webpack --watch --mode development",
     "test": "npm run demo && cd demo/mediator-app && testcafe chrome:headless ../../test/test.js && cd ../.. && npm run stop"
