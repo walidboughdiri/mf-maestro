@@ -51,7 +51,7 @@
     "demo": "([ ! -d \"node_modules\" ] && npm ci  || true) && npm run build && npm link && npm run start:apps && cd demo/mediator-app && ([ ! -d \"node_modules\" ] && npm ci || true) && npm link mf-maestro && (npm start &) && cd ../..",
     "stop": "kill $(ps aux | grep '[w]ebpack-dev-server' | awk '{print $2}')",
     "start": "webpack --watch --mode development",
-    "test": "npm run demo && cd demo/mediator-app && testcafe chrome:headless ../../test/test.js && cd ../.. && npm run stop"
+    "test": "npm run demo && cd demo/mediator-app && testcafe chrome:headless ../../tests/test.js && cd ../.. && npm run stop"
   },
   "version": "1.4.0"
 }
