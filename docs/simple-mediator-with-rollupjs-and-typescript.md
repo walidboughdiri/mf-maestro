@@ -32,7 +32,7 @@ export default 'hello world!';
 create the bundle :
 
 ```
-rollup src/main.js -o bundle.js -f cjs
+rollup src/app.js -o bundle.js -f cjs
 ```
 
 and you should have a file at the root level with this code :
@@ -41,11 +41,11 @@ and you should have a file at the root level with this code :
 'use strict';
 
 var foo = 'hello world!';
-        
-function app () {      
+
+function app () {
   console.log(foo);
 }
-    
+
 module.exports = app;
 ```
 
@@ -84,12 +84,12 @@ and change the ```app.js```code :
 
 ```
 import { startMediator } from "mf-maestro";
-import MainPage from "./pages/MainPage";   
-                                           
+import MainPage from "./pages/MainPage";
+
 startMediator("root", MainPage, () => ({}));
 ```
 
-We start by importing ```startMediator``` function from ```mf-maestro```.  
+We start by importing ```startMediator``` function from ```mf-maestro```.
 We import the first page of our application.
 It's the function that starts the mediator.
 It accepts 3 params :
@@ -100,8 +100,8 @@ It accepts 3 params :
 Add the MainPage to the project (We recommend to add all pages in a folder "pages" at the project's root) :
 
 ```
-import React from "react";                                        
-                                                                                
+import React from "react";
+
 export default function MainPage() {
   return (<div>Welcome to our application main page</div>);
 }
@@ -165,8 +165,8 @@ export default {
 }
 ```
 
-Nothing special except for ```commonjs()``` function and output format.  
-The format can be amd, cjs, esm, iife, umd. Here we use umd, since we need something usable in browser and esm (ES6 modules) is not yet compatible with all browsers. Cjs is not good for browsers.  
+Nothing special except for ```commonjs()``` function and output format.
+The format can be amd, cjs, esm, iife, umd. Here we use umd, since we need something usable in browser and esm (ES6 modules) is not yet compatible with all browsers. Cjs is not good for browsers.
 ```commonjs()``` function takes an object argument, and pay attention to ```namedExports```property : for each imported module, it specify the exports. You might need to add manually other ones. If you try to build the bundle and have this kind of error :
 
 ```
@@ -206,7 +206,7 @@ Create the bundle :
 npm run build
 ```
 
-Ok now we know how to build our app, we need an html page and a server to test it.  
+Ok now we know how to build our app, we need an html page and a server to test it.
 
 For that, we'll use [rollup-plugin-serve](https://www.npmjs.com/package/rollup-plugin-serve) :
 
