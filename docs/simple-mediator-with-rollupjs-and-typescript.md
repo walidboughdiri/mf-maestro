@@ -93,9 +93,10 @@ We start by importing ```startMediator``` function from ```mf-maestro```.
 We import the first page of our application.
 It's the function that starts the mediator.
 It accepts 3 params :
-	- the id of the html node where we start the mediator in the page
-	- the first page to show
-	- for now mf-maestro needs a function (will be fixed soon). We just return an empty object.
+
+- the id of the html node where we start the mediator in the page
+- the first page to show
+- for now mf-maestro needs a function (will be fixed soon). We just return an empty object.
 
 Add the MainPage to the project (We recommend to add all pages in a folder "pages" at the project's root) :
 
@@ -166,7 +167,7 @@ export default {
 ```
 
 Nothing special except for ```commonjs()``` function and output format.
-The format can be amd, cjs, esm, iife, umd. Here we use umd, since we need something usable in browser and esm (ES6 modules) is not yet compatible with all browsers. Cjs is not good for browsers.
+The format can be amd, cjs, esm, iife, umd. Here we use umd, since we need something usable in browser and esm (ES6 modules) is not yet compatible with all browsers. Cjs is not good for browsers.  
 ```commonjs()``` function takes an object argument, and pay attention to ```namedExports```property : for each imported module, it specify the exports. You might need to add manually other ones. If you try to build the bundle and have this kind of error :
 
 ```
