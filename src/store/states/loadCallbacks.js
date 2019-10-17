@@ -1,8 +1,8 @@
-import { validate } from "byContract";
+import { validates } from "../../helpers";
 import { store } from "../store";
 
 export function addMicroAppLoadWatcher(appName, callback, wrapperId) {
-  validate(arguments, ["string", "function", "string"]);
+  validates(arguments, ["string", "function", "string"]);
   store.dispatch({
     appName,
     callback,
@@ -12,12 +12,12 @@ export function addMicroAppLoadWatcher(appName, callback, wrapperId) {
 }
 
 export function deleteMicroAppLoadWatchers(microAppName) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   store.dispatch({ microAppName, type: "deleteMicroAppLoadWatchers" });
 }
 
 export function getMicroAppLoadWatchers(microAppName) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   const watchers = store.getState().loadCallbacks[microAppName];
   return typeof watchers === "object" ? watchers : {};
 }

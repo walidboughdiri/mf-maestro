@@ -1,4 +1,4 @@
-import { validate } from "byContract";
+import { validates } from "../../helpers";
 import { store } from "../store";
 
 export function navigationState() {
@@ -6,7 +6,7 @@ export function navigationState() {
 }
 
 export function storeBlockedNavigation(targetLocation, unblockFn) {
-  validate(arguments, ["string", "function"]);
+  validates(arguments, ["string", "function"]);
   store.dispatch({
     targetLocation,
     type: "storeBlockedNavigation",

@@ -2,7 +2,6 @@
   "author": "Charlie Eissen",
   "description": "a micro frontends mediator",
   "dependencies": {
-    "bycontract": "^2.0.6",
     "eventemitter3": "^4.0.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",

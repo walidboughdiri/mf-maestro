@@ -1,4 +1,4 @@
-import { validate } from "byContract";
+import { validates } from "../helpers";
 import MicroAppLoadingComponent from "../MicroAppLoadingComponent";
 import {
   appIsInitialized,
@@ -7,7 +7,7 @@ import {
 } from "../store/states/app";
 
 export default function configureApp(init, events) {
-  validate(init, "function=");
+  validates(init, "function=");
   if (appIsInitialized()) return;
   initializeApp();
   const config =

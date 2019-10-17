@@ -1,8 +1,8 @@
-import { validate } from "byContract";
+import { validates } from "../../helpers";
 import { store } from "../store";
 
 export function addManifestLoadListener(manifestUrl, ref, listener) {
-  validate(arguments, ["string", "string", "function"]);
+  validates(arguments, ["string", "string", "function"]);
   return store.dispatch({
     listener,
     manifestUrl,
@@ -16,17 +16,17 @@ export function getManifestLoadListeners(manifestUrl) {
 }
 
 export function isManifestLoaded(manifestUrl) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   return isManifestInState(manifestUrl, "loaded");
 }
 
 export function isManifestLoading(manifestUrl) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   return isManifestInState(manifestUrl, "loading");
 }
 
 export function isManifestInState(manifestUrl, state) {
-  validate(arguments, ["string", "string"]);
+  validates(arguments, ["string", "string"]);
   if (state !== "loading" && state !== "loaded") {
     throw `wrong state for manifest (state: "${state}")`;
   }
@@ -42,7 +42,7 @@ export function microAppConfigFromState(
   manifestUrl,
   microAppName
 ) {
-  validate(arguments, ["string", "string", "string"]);
+  validates(arguments, ["string", "string", "string"]);
   if (!isManifestLoaded(manifestUrl, componentId)) return null;
   const manifestState = store.getState().loadedManifests[manifestUrl];
   if (manifestState === undefined) return null;

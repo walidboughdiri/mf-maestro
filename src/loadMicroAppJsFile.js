@@ -1,4 +1,4 @@
-import { validate } from "byContract";
+import { validates } from "./helpers";
 import { microAppConfigFromState } from "./store/states/loadedManifests";
 import {
   isMicroAppLoaded,
@@ -7,7 +7,7 @@ import {
 import { store } from "./store/store";
 
 export function loadMicroAppJsFile(manifestUrl, microAppName, wrapperId) {
-  validate(arguments, ["string", "string", "string"]);
+  validates(arguments, ["string", "string", "string"]);
   if (isMicroAppLoading(microAppName)) return "loading";
   if (isMicroAppLoaded(microAppName)) return "loaded";
   const microAppConfig = microAppConfigFromState(

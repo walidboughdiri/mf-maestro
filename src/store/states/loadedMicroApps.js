@@ -1,23 +1,23 @@
-import { validate } from "byContract";
+import { validates } from "../../helpers";
 import { store } from "../store";
 
 export function getMicroAppState(appName) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   return store.getState().loadedMicroApps[appName];
 }
 
 export function isMicroAppLoaded(microAppName) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   return isMicroAppInState(microAppName, "loaded");
 }
 
 export function isMicroAppLoading(microAppName) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   return isMicroAppInState(microAppName, "loading");
 }
 
 export function isMicroAppInState(microAppName, state) {
-  validate(arguments, ["string", "string"]);
+  validates(arguments, ["string", "string"]);
   if (state !== "loading" && state !== "loaded") {
     throw `wrong state for manifest (state: "${state}")`;
   }

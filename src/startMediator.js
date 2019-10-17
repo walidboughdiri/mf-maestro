@@ -1,7 +1,6 @@
 import "regenerator-runtime/runtime";
 import "./store/store";
 import "./globalNamespace";
-import { validate } from "byContract";
 import React from "react";
 import ReactDOM from "react-dom";
 import MediatorApp from "./MediatorApp";
@@ -11,9 +10,10 @@ import * as navigation from "./navigation";
 export { events, navigation, useEvents };
 export { default as IFrameMicroApp } from "./MicroAppTypes/IFrameMicroApp";
 export { default as MicroAppComponent } from "./MicroAppComponent";
+import { validates } from "./helpers";
 
 export function startMediator(targetDomElementId, MainPage, init) {
-  validate(arguments, ["string", "function", "function="]);
+  validates(arguments, ["string", "function", "function"], "startMediator");
 
   ReactDOM.render(
     <MediatorApp init={init} mainPage={MainPage} />,

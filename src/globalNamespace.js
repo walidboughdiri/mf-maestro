@@ -1,4 +1,4 @@
-import { validate } from "byContract";
+import { validates } from "./helpers";
 import { store } from "./store/store";
 import { toggleEventsDebug } from "./store/states/app";
 import {
@@ -16,7 +16,7 @@ import {
 } from "./events";
 
 function instantiate(microAppName) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   Object.values(getMicroAppLoadWatchers(microAppName)).forEach(watcher => {
     watcher();
   });

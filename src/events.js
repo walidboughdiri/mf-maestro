@@ -1,4 +1,3 @@
-import { validate } from "byContract";
 import EventEmitter from "eventemitter3";
 import {
   addEventListener,
@@ -8,21 +7,22 @@ import {
 } from "./store/states/eventListeners";
 import { isEventsDebugActivated } from "./store/states/app";
 import { browserHistory } from "./browserHistory";
+import { validates } from "./helpers";
 
 const eventEmitter = new EventEmitter();
 
 export function once(event, callback, storeGroupId, context) {
-  validate(arguments, ["string", "function", "string", "object="]);
+  validates(arguments, ["string", "function", "string", "object="]);
   addEventListener(storeGroupId, event, callback);
-  return validate(eventEmitter.once(event, callback, context), EventEmitter);
+  return validates(eventEmitter.once(event, callback, context), "EventEmitter");
 }
 export function on(event, callback, storeGroupId, context) {
-  validate(arguments, ["string", "function", "string", "object="]);
+  validates(arguments, ["string", "function", "string", "object="]);
   addEventListener(storeGroupId, event, callback);
-  return validate(eventEmitter.on(event, callback, context), EventEmitter);
+  return validates(eventEmitter.on(event, callback, context), "EventEmitter");
 }
 export function removeListenersByGroup(storeGroupId) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   Object.entries(getStateForEventsGroup(storeGroupId)).forEach(
     ([event, callbacks]) => {
       callbacks.forEach(callback => {
@@ -33,23 +33,23 @@ export function removeListenersByGroup(storeGroupId) {
   removeEventListeners(storeGroupId);
 }
 export function removeListener(event, callback, microAppId, context) {
-  validate(arguments, ["string", "function", "string", "object="]);
+  validates(arguments, ["string", "function", "string", "object="]);
   removeEventListener(microAppId, event, callback);
-  return validate(
+  return validates(
     eventEmitter.removeListener(event, callback, context),
-    EventEmitter
+    "EventEmitter"
   );
 }
 export function removeAllListeners(event) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   return eventEmitter.removeAllListeners(event);
 }
 export function listeners(event) {
-  validate(arguments, ["string"]);
+  validates(arguments, ["string"]);
   return eventEmitter.listeners(event);
 }
 export function emit(event, ...args) {
-  validate(event, "string");
+  validates(event, "string");
   if (isEventsDebugActivated() && event.indexOf("devtool") === -1) {
     console.info(
       `%cEvent emitted : %c"${event}"`,
@@ -68,7 +68,7 @@ export function redirectOnEvent(
   { emitBefore, emitAfter } = {},
   onFn
 ) {
-  validate(arguments, [
+  validates(arguments, [
     "string",
     "string",
     "Object.<string, string>=",
@@ -90,7 +90,7 @@ export function redirectOnEvent(
   });
 }
 export function mutateEvent(sourceEvent, targetEvent, transformArgsFn, onFn) {
-  validate(arguments, ["string", "string|function", "function=", "function"]);
+  validates(arguments, ["string", "string|function", "function=", "function"]);
   onFn(sourceEvent, (...args) => {
     const _targetEvent =
       typeof targetEvent === "string" ? targetEvent : targetEvent(...args);

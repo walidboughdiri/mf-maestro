@@ -446,7 +446,6 @@ A micro-frontend only gets its data from its backend (and if you are still using
 
 - improve this doc again and again...
 - add a mechanism to extract the framework from micro-frontend's build and be able to cache an already loaded framework (by version) and give it to a micro-frontend if it needs to. This would reduce micro-frontends sizes, since for now, each one needs to load its own version. This is the main drawback of MfMaestro for now.
-- move tests to [cypress.io](https://www.cypress.io/).
 - add list of UI/UX patterns we have been developping
 - explain backend realtime architecture
 - add realtime frontend architecture
@@ -456,3 +455,4 @@ A micro-frontend only gets its data from its backend (and if you are still using
 - explain dynamic replacement of microfrontend using props
 - add a demo with web components
 - explain css architecture and how to use it
+- improve parameters validation

@@ -1,5 +1,4 @@
-import { validate } from "byContract";
-import EventEmitter from "eventemitter3";
+import { validates } from "../helpers";
 import { useEffect, useState } from "react";
 import { uuidv4 } from "../helpers";
 import {
@@ -13,7 +12,7 @@ import {
 } from "../events";
 
 export default function useEvents(ref) {
-  validate(arguments, ["string="]);
+  validates(arguments, ["string="]);
   const [groupRef] = useState(ref || uuidv4());
   useEffect(() => {
     return () => {
@@ -22,41 +21,44 @@ export default function useEvents(ref) {
   }, []);
 
   const onFn = function(event, callback, context) {
-    validate(arguments, ["string", "function", "object="]);
+    validates(arguments, ["string", "function", "object="]);
     on(groupRef + ":" + event, callback, groupRef, context);
-    return validate(on(event, callback, groupRef, context), EventEmitter);
+    return validates(on(event, callback, groupRef, context), "EventEmitter");
   };
 
   const scopedEventsFn = {
     emit: function(event, ...args) {
-      validate(event, "string");
-      return validate(emit(event, ...args, groupRef), "boolean");
+      validates(event, "string");
+      return validates(emit(event, ...args, groupRef), "boolean");
     },
     mutateEvent: function(sourceEvent, targetEvent, transformArgsFn) {
-      validate(arguments, ["string", "string|function", "function="]);
+      validates(arguments, ["string", "string|function", "function="]);
       return mutateEvent(sourceEvent, targetEvent, transformArgsFn, onFn);
     },
     on: onFn,
     once: function(event, callback, context) {
-      validate(arguments, ["string", "function", "object="]);
+      validates(arguments, ["string", "function", "object="]);
       once(groupRef + ":" + event, callback, groupRef, context);
-      return validate(once(event, callback, groupRef, context), EventEmitter);
+      return validates(
+        once(event, callback, groupRef, context),
+        "EventEmitter"
+      );
     },
     redirectOnEvent: function(event, path, options) {
-      validate(arguments, ["string", "string", "Object.<string, string>="]);
+      validates(arguments, ["string", "string", "Object.<string, string>="]);
       return redirectOnEvent(event, path, options, onFn);
     },
     removeListener: function(event, callback, context) {
-      validate(arguments, ["string", "function", "object="]);
+      validates(arguments, ["string", "function", "object="]);
       removeListener(groupRef + ":" + event, callback, groupRef, context);
-      return validate(
+      return validates(
         removeListener(event, callback, groupRef, context),
-        EventEmitter
+        "EventEmitter"
       );
     },
   };
 
-  return validate(
+  return validates(
     [groupRef, scopedEventsFn],
     ["string", "Object.<string, function>"]
   );
