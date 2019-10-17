@@ -1,4 +1,4 @@
-import React from "React";
+import React from "react";
 import PropTypes from "prop-types";
 import { Router } from "react-router-dom";
 import { browserHistory } from "./browserHistory";
