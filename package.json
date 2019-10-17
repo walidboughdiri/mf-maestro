@@ -52,5 +52,5 @@
     "start": "webpack --watch --mode development",
     "test": "npm run demo && cd demo/mediator-app && testcafe chrome:headless ../../tests/test.js && cd ../.. && npm run stop"
   },
-  "version": "1.4.0"
+  "version": "1.4.1"
 }
