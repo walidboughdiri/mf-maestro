@@ -1,5 +1,7 @@
+demo
+docs
 src
-test
+tests
 .eslintrc.js
 .gitignore
 .prettierrc.js

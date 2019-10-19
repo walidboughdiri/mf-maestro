@@ -140,7 +140,8 @@ export default {
   input: 'src/app.js',
   output: {
     file: outputFile,
-    format: 'umd'
+    format: 'umd',
+    name: "myMediator,
   },
   plugins: [
     replace({
@@ -167,7 +168,7 @@ export default {
 ```
 
 Nothing special except for ```commonjs()``` function and output format.
-The format can be amd, cjs, esm, iife, umd. Here we use umd, since we need something usable in browser and esm (ES6 modules) is not yet compatible with all browsers. Cjs is not good for browsers.  
+The format can be amd, cjs, esm, iife, umd. Here we use umd, since we need something usable in browser and esm (ES6 modules) is not yet compatible with all browsers. Cjs is not good for browsers. When using umd, we need to define a name for the module.  
 ```commonjs()``` function takes an object argument, and pay attention to ```namedExports```property : for each imported module, it specify the exports. You might need to add manually other ones. If you try to build the bundle and have this kind of error :
 
 ```
