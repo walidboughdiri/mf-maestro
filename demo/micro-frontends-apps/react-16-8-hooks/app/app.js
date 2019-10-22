@@ -10,7 +10,7 @@ function start(appNode, params, options) {
 function stop(appNode, options) {
   console.log(`%cstopping ${options.groupRef}`, "color:orange");
 }
-console.log(window.MfMaestro);
+
 if (window.MfMaestro) {
   window.MfMaestro.registerMicroApp("hooked-react-app", { start, stop });
 } else {

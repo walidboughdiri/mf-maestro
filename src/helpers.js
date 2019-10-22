@@ -54,9 +54,6 @@ export function validate(paramValue, arg_index, src_contract, src_context) {
   if (contracts.includes("boolean") && paramType === "boolean") {
     isValid = true;
   }
-  if (paramType === "class") {
-    isValid = !isValid && matchClass(classes, paramValue);
-  }
 
   if (!isValid)
     throwException(
@@ -66,13 +63,6 @@ export function validate(paramValue, arg_index, src_contract, src_context) {
       contracts,
       "VALIDATIONERROR"
     );
-}
-
-function matchClass(classes, paramValue) {
-  return (
-    classes.find(classAsString => paramValue instanceof eval(classAsString)) !==
-    undefined
-  );
 }
 
 function isClass(func) {

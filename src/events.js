@@ -14,12 +14,12 @@ const eventEmitter = new EventEmitter();
 export function once(event, callback, storeGroupId, context) {
   validates(arguments, ["string", "function", "string", "object="]);
   addEventListener(storeGroupId, event, callback);
-  return validates(eventEmitter.once(event, callback, context), "EventEmitter");
+  return eventEmitter.once(event, callback, context);
 }
 export function on(event, callback, storeGroupId, context) {
   validates(arguments, ["string", "function", "string", "object="]);
   addEventListener(storeGroupId, event, callback);
-  return validates(eventEmitter.on(event, callback, context), "EventEmitter");
+  return eventEmitter.on(event, callback, context);
 }
 export function removeListenersByGroup(storeGroupId) {
   validates(arguments, ["string"]);
@@ -35,10 +35,7 @@ export function removeListenersByGroup(storeGroupId) {
 export function removeListener(event, callback, microAppId, context) {
   validates(arguments, ["string", "function", "string", "object="]);
   removeEventListener(microAppId, event, callback);
-  return validates(
-    eventEmitter.removeListener(event, callback, context),
-    "EventEmitter"
-  );
+  return eventEmitter.removeListener(event, callback, context);
 }
 export function removeAllListeners(event) {
   validates(arguments, ["string"]);

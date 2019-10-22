@@ -23,7 +23,7 @@ export default function useEvents(ref) {
   const onFn = function(event, callback, context) {
     validates(arguments, ["string", "function", "object="]);
     on(groupRef + ":" + event, callback, groupRef, context);
-    return validates(on(event, callback, groupRef, context), "EventEmitter");
+    return on(event, callback, groupRef, context);
   };
 
   const scopedEventsFn = {
@@ -39,10 +39,7 @@ export default function useEvents(ref) {
     once: function(event, callback, context) {
       validates(arguments, ["string", "function", "object="]);
       once(groupRef + ":" + event, callback, groupRef, context);
-      return validates(
-        once(event, callback, groupRef, context),
-        "EventEmitter"
-      );
+      return once(event, callback, groupRef, context);
     },
     redirectOnEvent: function(event, path, options) {
       validates(arguments, ["string", "string", "Object.<string, string>="]);
@@ -51,10 +48,7 @@ export default function useEvents(ref) {
     removeListener: function(event, callback, context) {
       validates(arguments, ["string", "function", "object="]);
       removeListener(groupRef + ":" + event, callback, groupRef, context);
-      return validates(
-        removeListener(event, callback, groupRef, context),
-        "EventEmitter"
-      );
+      return removeListener(event, callback, groupRef, context);
     },
   };
 

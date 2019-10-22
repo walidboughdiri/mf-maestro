@@ -1,10 +1,10 @@
 {
   "micro-app-2": {
-    "css": "/assets/micro-app-2/app.css",
-    "url":"/assets/micro-app-2/app.js"
+    "css": "http://localhost:3000/assets/micro-app-2/app.css",
+    "url":"http://localhost:3000/assets/micro-app-2/app.js"
   },
   "micro-app-3": {
-    "css": "/assets/micro-app-3/app.css",
-    "url":"/assets/micro-app-3/app.js"
+    "css": "http://localhost:3000/assets/micro-app-3/app.css",
+    "url":"http://localhost:3000/assets/micro-app-3/app.js"
   }
 }

@@ -1,4 +1,4 @@
-# How to setup a base mediator project with rollupjs and typescript
+# How to setup a base mediator project with rollup and typescript
 
 ```
 mkdir calions-mediator
@@ -83,6 +83,7 @@ npm install mf-maestro --save
 and change the ```app.js```code :
 
 ```
+// app.js
 import { startMediator } from "mf-maestro";
 import MainPage from "./pages/MainPage";
 
@@ -178,6 +179,7 @@ The format can be amd, cjs, esm, iife, umd. Here we use umd, since we need somet
 then you know you have to add a line to this property :
 
 ```
+// rollup.config.js
 ...
 'node_modules/react/index.js': [..., 'Component'],
 ...
@@ -186,6 +188,7 @@ then you know you have to add a line to this property :
 To configure Babel, you can use ```.babelrc```file or ```package.json```. Here we use the first solution (nothing special about it) :
 
 ```
+// .babelrc
 {
   "presets": ["@babel/preset-env", "@babel/preset-react"]
 }
@@ -194,6 +197,7 @@ To configure Babel, you can use ```.babelrc```file or ```package.json```. Here w
 Add npm scripts to build bundles :
 
 ```
+// package.json
 ...
 "scripts": {
   "build": "rollup -c",
@@ -237,6 +241,7 @@ Create a directory to put your index html page ```public/index.html``` :
 and configure ```rollup-plugin-serve``` in ```rollup.config.js```file :
 
 ```
+// rollup.config.js
 ...
 import serve from 'rollup-plugin-serve'
 ...
@@ -261,6 +266,7 @@ Start the app ```npm run build```and go ```http://localhost:3000/```, you should
 Rollup has a watch mode. To activate it, just add a script to ```package.json``` :
 
 ```
+// package.json
 {
   ...
   "scripts": {
@@ -278,6 +284,7 @@ Now the server always starts. We'll change our config and scripts to not start t
 First ```rollup.config.js``` :
 
 ```
+// rollup.config.js
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
@@ -332,11 +339,12 @@ export default {
 }
 ```
 
-We check for the env var **START_SERVER**. It is true, then we start the server, adding it to the plugins list.
+We check for the env var **START_SERVER**. If it is true, then we start the server, adding it to the plugins list.
 
 Next we change the npm start script in ```package.json``` :
 
 ```
+// package.json
 ...
 "scripts": {
     "build": "rollup -c",
@@ -345,3 +353,109 @@ Next we change the npm start script in ```package.json``` :
   },
 ...
 ```
+
+Cool. We can activate rollup watch mode with the ```-w``` arg :
+
+```
+// package.json
+...
+"scripts": {
+    "build": "rollup -c",
+    "start": "START_SERVER=true rollup -c -w",
+    "build:production": "NODE_ENV=production rollup -c"
+  },
+...
+```
+
+Now when you run ```npm start```, you can change your code and rollup automatically recompile the files.
+
+### add typescript
+
+To add typescript to the project, we need to install the langage package [typescript](https://www.npmjs.com/package/typescript) and the rollup plugin to use it with rollup [rollup-plugin-typescript2](https://www.npmjs.com/package/rollup-plugin-typescript2).
+
+```
+npm i -D typescript rollup-plugin-typescript2
+```
+
+Add configuration to your ```rollup.config.js``` file :
+
+```
+// rollup.config.js
+import typescript from 'rollup-plugin-typescript2';
+...
+const plugins = [
+  ...
+  typescript(),
+  commonjs({
+  ...
+```
+
+The plugin has several options. You should watch the doc to look if any would be usefull for you (```clean```, ```typescript```,...).
+
+Rename ```src/app.js``` and ```src/pages/MainPage.js``` to ```src/app.ts``` and ```src/pages/MainPage.tsx``` (```tsx```is used for jsx typescript transpilation).
+
+In ```rollup.config.js```, change the input file :
+
+```
+...
+export default {
+  input: 'src/app.ts',
+...
+```
+
+We need to add a ```tsconfig.json``` file at project's root to [configure](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) the typescript compiler :
+
+```
+// tsconfig.json
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "jsx": "react",
+    "module": "es6",
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "target": "es5",
+    "typeRoots" : [
+      "node_modules/@types",
+      "./types"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src/**/*"
+  ]
+}
+```
+
+For options, you can refer to the [typescript compiler options doc](https://www.typescriptlang.org/docs/handbook/compiler-options.html).  
+The ```allowSyntheticDefaultImports``` is required by React (If you don't add it, you'll get an error to add it).  
+The [```jsx```](https://www.typescriptlang.org/docs/handbook/jsx.html) with ```react``` value allows to transpile jsx code to javascript code.  
+The ```typeRoots``` is important since it specifies where typescript can find [type definitions](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types) to include. Here we add all definitions from modules in ```node_modules/@types``` (the ones we are not owner but we need to use them) and we add a directory to our project's root where we put our types definitions :
+
+```
+mkdir types
+mkdir types/mf-maestro
+```
+
+And in the ```types/mf-maestro``` add an ```index.d.ts``` file where we write mf-maestro type definitions (a future release will allow you to use the ones in node_modules/@types) :
+
+```
+// types/mf-maestro/index.d.ts
+declare module 'mf-maestro' {
+    export function MicroAppComponent(props: any): any;
+    export function startMediator(targetDomElementId: string, MainPage: any, init?: any): void;
+    export function useEvents(ref: string): [string,any];
+}
+```
+
+And for now, we need to add React types to the project, else we have an error from typescript when we try to compile the project :
+
+```
+npm install -D @types/react
+```
+
+Now you should be able to ```npm start``` and use typescript!

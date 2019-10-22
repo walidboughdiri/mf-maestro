@@ -8,6 +8,10 @@ module.exports = {
     port: 3000,
     publicPath: "http://localhost:3000/dist/",
     hotOnly: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "*",
+    },
   },
   entry: "./index.js",
   mode: "development",
