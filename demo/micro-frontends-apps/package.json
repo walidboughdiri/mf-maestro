@@ -1,0 +1,17 @@
+{
+  "name": "micro-frontends-apps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "mf-build -p ./",
+    "bundle": "mf-bundle -p ./",
+    "clean": "mf-clean -p ./",
+    "test": "mf-test -p ./"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mf-bundler": "^1.0.3"
+  }
+}
