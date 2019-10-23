@@ -7,11 +7,12 @@
     "build": "mf-build -p ./",
     "bundle": "mf-bundle -p ./",
     "clean": "mf-clean -p ./",
+    "serve": "mf-serve",
     "test": "mf-test -p ./"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mf-bundler": "^1.0.3"
+    "mf-bundler": "^1.1.4"
   }
 }
