@@ -13,6 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mf-bundler": "^1.1.4"
+    "mf-bundler": "^1.1.9"
   }
 }
