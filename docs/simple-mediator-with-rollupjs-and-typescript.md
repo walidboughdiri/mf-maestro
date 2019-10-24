@@ -162,6 +162,8 @@ export default {
       namedExports: {
         'node_modules/react/index.js': ['Children', 'Component', 'PropTypes', 'createElement'],
         'node_modules/react-dom/index.js': ['render'],
+        'node_modules/react-is/index.js': ['isValidElementType'],
+        'node_modules/mf-maestro/dist/index.js': ['MicroAppComponent', 'startMediator'],
       }
     }),
   ],
@@ -193,6 +195,8 @@ To configure Babel, you can use ```.babelrc```file or ```package.json```. Here w
   "presets": ["@babel/preset-env", "@babel/preset-react"]
 }
 ```
+
+Note that the ```rollup-plugin-babel``` has some extra options compared to babel options. Here we use ```exclude: "node_modules/**"```, but you might be interested by others. Read the plugin's doc on github. It's usefull!
 
 Add npm scripts to build bundles :
 
@@ -238,7 +242,7 @@ Create a directory to put your index html page ```public/index.html``` :
 </html>
 ```
 
-and configure ```rollup-plugin-serve``` in ```rollup.config.js```file :
+and configure ```rollup-plugin-serve``` in ```rollup.config.js``` file :
 
 ```
 // rollup.config.js
@@ -251,7 +255,7 @@ export default {
     ...
     serve({
       contentBase: ['dist', 'public'],
-      historyApiFallback: false,
+      historyApiFallback: true,
       host: 'localhost',
       port: 3000,
     }),
@@ -259,6 +263,7 @@ export default {
 }
 ```
 
+```historyApiFallback``` is usefull when you reload a page else the serve will serve 404 not found (read the doc on github).  
 We will server on port ```3000``` of ```localhost```, from directories ```dist```(where we compile the js bundle, not in git) and ```public```(where is our html page, in git).
 
 Start the app ```npm run build```and go ```http://localhost:3000/```, you should see "Welcome to our application main page" in the page.
@@ -322,7 +327,7 @@ if (process.env.START_SERVER === "true") {
   plugins.push(
     serve({
       contentBase: ['dist', 'public'],
-      historyApiFallback: false,
+      historyApiFallback: true,
       host: 'localhost',
       port: 3000,
     })
@@ -409,9 +414,7 @@ We need to add a ```tsconfig.json``` file at project's root to [configure](https
 // tsconfig.json
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "declarationDir": "./dist",
+    "esModuleInterop": true,
     "jsx": "react",
     "module": "es6",
     "noImplicitAny": true,
@@ -419,7 +422,7 @@ We need to add a ```tsconfig.json``` file at project's root to [configure](https
     "target": "es5",
     "typeRoots" : [
       "node_modules/@types",
-      "./types"
+      "./ts_types"
     ]
   },
   "exclude": [
@@ -431,20 +434,22 @@ We need to add a ```tsconfig.json``` file at project's root to [configure](https
 }
 ```
 
-For options, you can refer to the [typescript compiler options doc](https://www.typescriptlang.org/docs/handbook/compiler-options.html).  
-The ```allowSyntheticDefaultImports``` is required by React (If you don't add it, you'll get an error to add it).  
+For options, you can refer to the [typescript tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) and [compiler options](https://www.typescriptlang.org/docs/handbook/compiler-options.html) docs.  
 The [```jsx```](https://www.typescriptlang.org/docs/handbook/jsx.html) with ```react``` value allows to transpile jsx code to javascript code.  
-The ```typeRoots``` is important since it specifies where typescript can find [type definitions](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types) to include. Here we add all definitions from modules in ```node_modules/@types``` (the ones we are not owner but we need to use them) and we add a directory to our project's root where we put our types definitions :
+
+**[-----If you don't use the ```noImplicitAny``` option, the next part is useless, go directly after ---]**
+
+Since we use ```"noImplicitAny": true``` options, typescript will throw errors for not typed methods. The ```typeRoots``` is then important since it specifies where typescript can find [type definitions](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types) to include. Here we add all definitions from modules in ```node_modules/@types``` (the ones we are not owner but we need to use) and we add a directory to our project's root where we put our types definitions :
 
 ```
-mkdir types
-mkdir types/mf-maestro
+mkdir ts_types
+mkdir ts_types/mf-maestro
 ```
 
-And in the ```types/mf-maestro``` add an ```index.d.ts``` file where we write mf-maestro type definitions (a future release will allow you to use the ones in node_modules/@types) :
+And in the ```ts_types/mf-maestro``` add an ```index.d.ts``` file where we write mf-maestro type definitions (a future release will allow you to use the ones in node_modules/@types) :
 
 ```
-// types/mf-maestro/index.d.ts
+// ts_types/mf-maestro/index.d.ts
 declare module 'mf-maestro' {
     export function MicroAppComponent(props: any): any;
     export function startMediator(targetDomElementId: string, MainPage: any, init?: any): void;
@@ -457,5 +462,11 @@ And for now, we need to add React types to the project, else we have an error fr
 ```
 npm install -D @types/react
 ```
+
+The ```typeRoots``` attributes is required since we specify ```include``` in ```tsconfig.json``` file. If we don't specify it, the whole directory is scanned. So no need to add it in that case.  
+Another option would be to put ```ts_types``` directory into ```src```. Since this directory is included, then our types files would be too. There are others usefull options for ```tsconfig.json``` files. Take the time to read the doc. It might be usefull in your case. Here we put only the minimal configuration to run the project.
+
+**[----- end of ```noImplicitAny``` details section -----]**
+
 
 Now you should be able to ```npm start``` and use typescript!
